@@ -1,6 +1,13 @@
 package com.zlimbo.bcweb;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.citahub.cita.protobuf.Blockchain;
+import com.citahub.cita.protocol.CITAj;
+import com.citahub.cita.protocol.core.DefaultBlockParameter;
+import com.citahub.cita.protocol.core.methods.response.*;
+import com.citahub.cita.protocol.http.HttpService;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,19 +15,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
 
 @SpringBootApplication
 public class BcwebApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
         SpringApplication.run(BcwebApplication.class, args);
+
+        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
+        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
+        //testCitaService(service);
+        testProtobuf();
     }
 
     @Autowired
     private Environment env;
 
     //destroy-method="close"的作用是当数据库连接不使用的时候,就把该连接重新放到数据池中,方便下次使用调用.
-    @Bean(destroyMethod =  "close")
+    @Bean(destroyMethod =  "")
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
@@ -36,5 +54,160 @@ public class BcwebApplication {
         dataSource.setTestWhileIdle(true);//建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
         dataSource.setPoolPreparedStatements(false);//是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
         return dataSource;
+    }
+
+
+    public static void testCitaService(CITAj service) throws IOException {
+        System.out.println("\n");
+        NetPeerCount netPeerCount = service.netPeerCount().send();
+        BigInteger peerCount = netPeerCount.getQuantity();
+        System.out.print("peerCount: ");
+        System.out.println(peerCount);
+
+        String addr1 = "0x034f4fcd88b349edc5e30860b088736b82e9ccfc";
+        DefaultBlockParameter defaultBlockParameter1 = DefaultBlockParameter.valueOf("latest");
+        AppGetBalance getBalance = service.appGetBalance(addr1, defaultBlockParameter1).send();
+        BigInteger balance = getBalance.getBalance();
+        System.out.print("balance: ");
+        System.out.println(balance);
+
+        String addr2 = "0x73dd1d91001cce116cce33ca75f2af5f96898ed2e9c83d5cf0045e99e0f2e5e0";
+        DefaultBlockParameter defaultBlockParameter2 = DefaultBlockParameter.valueOf("latest");
+        AppGetAbi getAbi = service.appGetAbi(addr2, defaultBlockParameter2).send();
+        String abi = getAbi.getAbi();
+        System.out.print("abi: ");
+        System.out.println(abi);
+
+        DefaultBlockParameter defaultParam = DefaultBlockParameter.valueOf("latest");
+        AppMetaData appMetaData = service.appMetaData(defaultParam).send();
+        AppMetaData.AppMetaDataResult result = appMetaData.getAppMetaDataResult();
+        BigInteger chainId = result.getChainId();
+        String chainName = result.getChainName();
+        String genesisTS = result.getGenesisTimestamp();
+        System.out.print("chainId: ");
+        System.out.println(chainId);
+        System.out.print("chainName: ");
+        System.out.println(chainName);
+        System.out.print("genesisTS: ");
+        System.out.println(genesisTS);
+
+        BigInteger preBlockNumber = new BigInteger("-1");
+        while (true) {
+            AppBlockNumber result2 = service.appBlockNumber().send();
+            BigInteger blockNumber = result2.getBlockNumber();
+
+            if (blockNumber.compareTo(preBlockNumber) == 0) {
+                continue;
+            }
+            preBlockNumber = blockNumber;
+
+            System.out.print("\n\n--blockNumber: ");
+            System.out.println(blockNumber);
+
+            AppBlock appBlock = service.appGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send();
+            System.out.println("----appBlock");
+            System.out.print("id: ");
+            System.out.println(appBlock.getId());
+            System.out.print("jsonrpc: ");
+            System.out.println(appBlock.getJsonrpc());
+            System.out.print("rawResponse: ");
+            System.out.println(appBlock.getRawResponse());
+
+            if (appBlock.isEmpty()) {
+                System.out.println("This no block!");
+            } else {
+                AppBlock.Block block = appBlock.getBlock();
+                System.out.println("--------Block");
+                System.out.print("version: ");
+                System.out.println(block.getVersion());
+                System.out.print("hash: ");
+                System.out.println(block.getHash());
+
+                AppBlock.Header header = block.getHeader();
+                System.out.println("------------header");
+                System.out.print("timestamp: ");
+                System.out.println(header.getTimestamp());
+                System.out.print("prevHash ");
+                System.out.println(header.getPrevHash());
+                System.out.print("number: ");
+                System.out.println(header.getNumber());
+                System.out.print("stateRoot ");
+                System.out.println(header.getStateRoot());
+                System.out.print("transactionsRoot: ");
+                System.out.println(header.getTransactionsRoot());
+                System.out.print("receiptsRoot: ");
+                System.out.println(header.getReceiptsRoot());
+                System.out.print("quotaUsed: ");
+                System.out.println(header.getQuotaUsed());
+                System.out.print("proposer: ");
+                System.out.println(header.getProposer());
+
+                AppBlock.Body body = block.getBody();
+                List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
+                System.out.println("------------body(txs): ");
+                System.out.println("This is " + transactionObjects.size() + " transactions.");
+
+                for (AppBlock.TransactionObject transactionObject : transactionObjects) {
+                    Transaction transaction = transactionObject.get();
+                    System.out.print("hash: ");
+                    System.out.println(transaction.getHash());
+                    System.out.print("blockHash: ");
+                    System.out.println(transaction.getBlockHash());
+//                    System.out.print("blockNumber: ");
+//                    System.out.println(transaction.getBlockNumber());
+                    System.out.print("content: ");
+                    System.out.println(transaction.getContent());
+                    System.out.print("index: ");
+                    System.out.println(transaction.getIndex());
+                    System.out.print("from: ");
+                    System.out.println(transaction.getFrom());
+                    System.out.println();
+
+
+                    // byte[] data = transaction.getContent().getBytes();
+                    String content = transaction.getContent().substring(2);
+                    System.out.println("content: " + content);
+                    BigInteger bigInteger = new BigInteger(content, 16);
+                    System.out.println("bigInteger: " + bigInteger);
+                    byte[] data = bigInteger.toByteArray();
+                    Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
+                    Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
+                    System.out.print("----------------txContent: ");
+
+                    System.out.println("to: " + txContent.getTo());
+                    System.out.println("nonce: " + txContent.getNonce());
+                    System.out.println("quota: " + txContent.getQuota());
+                    System.out.println("valid_until_block: " + txContent.getValidUntilBlock());
+                    System.out.println("chain_id: " + txContent.getChainId());
+
+                    System.out.println("" + txContent.getChainIdV1());
+
+                    System.out.println();
+
+                }
+            }
+        }
+    }
+
+
+    public static void testProtobuf() throws InvalidProtocolBufferException {
+        //Blockchain.Transaction.Builder builder = new Blockchain.Transaction.newBuilder();
+
+        String content = "0x0aae01122032353562623230363138396534643066623730336537323463306630323964311880ade20420fedbd1092a2460fe47b100000000000000000000000000000000000000000000000000000000000000013220000000000000000000000000000000000000000000000000000000000000000040024a1479196ffa4f3da6b6aff7f5eab96f7dddfd3b57e752200000000000000000000000000000000000000000000000000000000000000001124178e6b8550553888b807a2170facd0c0ca726d906ae495573a502fca77c9d99900b83ba38185626740f0bb40ea8e7b782a7ab55bc522aa3c4cc4e5342d484ec9e00";
+        content = content.substring(2);
+        System.out.println("content: " + content);
+        BigInteger bigInteger = new BigInteger(content, 16);
+        System.out.println("bigInteger: " + bigInteger);
+        byte[] data = bigInteger.toByteArray();
+
+        System.out.println("content length: " + content.length());
+        System.out.println("data length: " + data.length);
+        System.out.println();
+        Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
+        Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
+        System.out.print("----------------txContent: ");
+        System.out.print("chain_id: ");
+        System.out.println(txContent.getChainId());
+        System.out.println();
     }
 }
