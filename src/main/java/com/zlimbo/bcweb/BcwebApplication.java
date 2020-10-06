@@ -30,8 +30,8 @@ public class BcwebApplication {
 
         //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
         CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        //testCitaService(service);
-        testProtobuf();
+        testCitaService(service);
+        //testProtobuf();
     }
 
     @Autowired
@@ -172,18 +172,22 @@ public class BcwebApplication {
                     byte[] data = bigInteger.toByteArray();
                     Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
                     Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
-                    System.out.print("----------------txContent: ");
 
+                    System.out.println("----------------UnverifiedTransaction: ");
+                    System.out.println("crypto: " + unverifiedTransaction.getCryptoValue());
+                    System.out.println("signature: " + byteToString(unverifiedTransaction.getSignature()));
+                    System.out.println("--------------------txContent: ");
                     System.out.println("to: " + txContent.getTo());
                     System.out.println("nonce: " + txContent.getNonce());
                     System.out.println("quota: " + txContent.getQuota());
                     System.out.println("valid_until_block: " + txContent.getValidUntilBlock());
+                    System.out.println("data: " +  byteToString(txContent.getData()));
+                    System.out.println("value: " + byteToString(txContent.getValue()));
                     System.out.println("chain_id: " + txContent.getChainId());
-
-                    System.out.println("" + txContent.getChainIdV1());
-
+                    System.out.println("version: " + txContent.getVersion());
+                    System.out.println("to_v1: " + byteToString(txContent.getToV1()));
+                    System.out.println("chain_id_v1: " + byteToString(txContent.getChainIdV1()));
                     System.out.println();
-
                 }
             }
         }
@@ -191,10 +195,8 @@ public class BcwebApplication {
 
 
     public static void testProtobuf() throws InvalidProtocolBufferException {
-        //Blockchain.Transaction.Builder builder = new Blockchain.Transaction.newBuilder();
 
-        String content = "0x0aae01122032353562623230363138396534643066623730336537323463306630323964311880ade20420fedbd1092a2460fe47b100000000000000000000000000000000000000000000000000000000000000013220000000000000000000000000000000000000000000000000000000000000000040024a1479196ffa4f3da6b6aff7f5eab96f7dddfd3b57e752200000000000000000000000000000000000000000000000000000000000000001124178e6b8550553888b807a2170facd0c0ca726d906ae495573a502fca77c9d99900b83ba38185626740f0bb40ea8e7b782a7ab55bc522aa3c4cc4e5342d484ec9e00";
-        content = content.substring(2);
+        String content = "0x0af002122038306335313266393861343134663732383065616131333437353763356134351880ade20420662afe01608060405234801561001057600080fd5b5060df8061001f6000396000f3006080604052600436106049576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b114604e5780636d4ce63c146078575b600080fd5b348015605957600080fd5b5060766004803603810190808035906020019092919050505060a0565b005b348015608357600080fd5b50608a60aa565b6040518082815260200191505060405180910390f35b8060008190555050565b600080549050905600a165627a7a723058205aed214856a5c433292a354261c9eb88eed1396c83dabbe105bde142e49838ac0029322000000000000000000000000000000000000000000000000000000000000000004002522000000000000000000000000000000000000000000000000000000000000000011241b42d8e68fb9897dc14cca3ca1ee525305c21c14beb7378d25dda0761e1c69ea56a03327702e98c4701b1345550e5f49bb7945cde6dacf4bb8c643a460350e8d001";        content = content.substring(2);
         System.out.println("content: " + content);
         BigInteger bigInteger = new BigInteger(content, 16);
         System.out.println("bigInteger: " + bigInteger);
@@ -205,9 +207,43 @@ public class BcwebApplication {
         System.out.println();
         Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
         Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
-        System.out.print("----------------txContent: ");
-        System.out.print("chain_id: ");
-        System.out.println(txContent.getChainId());
+
+        System.out.println("----------------UnverifiedTransaction: ");
+        System.out.println("crypto: " + unverifiedTransaction.getCryptoValue());
+        System.out.println("signature: " + byteToString(unverifiedTransaction.getSignature()));
+        System.out.println("--------------------txContent: ");
+        System.out.println("to: " + txContent.getTo());
+        System.out.println("nonce: " + txContent.getNonce());
+        System.out.println("quota: " + txContent.getQuota());
+        System.out.println("valid_until_block: " + txContent.getValidUntilBlock());
+        System.out.println("data: " +  byteToString(txContent.getData()));
+        System.out.println("value: " + byteToString(txContent.getValue()));
+        System.out.println("chain_id: " + txContent.getChainId());
+        System.out.println("version: " + txContent.getVersion());
+        System.out.println("to_v1: " + byteToString(txContent.getToV1()));
+        System.out.println("chain_id_v1: " + byteToString(txContent.getChainIdV1()));
         System.out.println();
+    }
+
+
+    public static String byteToString(ByteString byteString) {
+        if (byteString.isEmpty()) {
+            return "0x0";
+        }
+        StringBuffer stringBuffer = new StringBuffer("0x");
+        for (byte b: byteString) {
+            int high = (int)(b & 0xF0) >>> 4, low = (int)(b & 0x0F);
+            if (high < 10) {
+                stringBuffer.append((char)('0' + high));
+            } else {
+                stringBuffer.append((char)('a' + high - 10));
+            }
+            if (low < 10) {
+                stringBuffer.append((char)('0' + low));
+            } else {
+                stringBuffer.append((char)('a' + low - 10));
+            }
+        }
+        return stringBuffer.toString();
     }
 }
