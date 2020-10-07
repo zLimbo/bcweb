@@ -38,7 +38,7 @@ public class InvoiceShow {
     static final String USER = "root";
     static final String PASS = "123456";
 
-    private long dataCount = 0;
+    private long offset = 6;
 
     @RequestMapping("")
     public ModelAndView invoiceShow() {
@@ -59,7 +59,7 @@ public class InvoiceShow {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM invoice";
+            String sql = "SELECT * FROM invoice LIMIT " + (offset - 6) + ", 6";
             ResultSet resultSet = stmt.executeQuery(sql);
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
@@ -106,10 +106,8 @@ public class InvoiceShow {
                 se.printStackTrace();
             }//end finally try
         }//end try
-        System.out.println("connext done!");
+        System.out.println("offset: " + offset);
 
-
-        dataCount = invoices.size();
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("invoices", invoices);
 
@@ -117,9 +115,9 @@ public class InvoiceShow {
     }
 
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
     @ResponseBody
-    public List<Invoice> update() {
+    public String update() {
 
         List<Invoice> invoices = new ArrayList<Invoice>();
         Connection conn = null;
@@ -137,7 +135,7 @@ public class InvoiceShow {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM invoice";
+            String sql = "SELECT * FROM invoice LIMIT " + offset + ", 1";
             ResultSet resultSet = stmt.executeQuery(sql);
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
@@ -184,9 +182,20 @@ public class InvoiceShow {
                 se.printStackTrace();
             }//end finally try
         }//end try
-        System.out.println("connext done!");
+        System.out.println("offset: " + offset);
 
-        return invoices;
+        if (invoices.isEmpty()) return "";
+        offset += 1;
+        Invoice invoice = invoices.get(0);
+        String liItem = "<li>\n<div>" +
+                invoice.getInvoiceDate() + "</div>\n<div>" +
+                invoice.getBuyerName() + "</div>\n<div>" +
+                invoice.getSellerName() + "</div>\n<div>" +
+                invoice.getPrice() + "</div>\n<div>" +
+                invoice.getTaxes() + "</div>\n<div>" +
+                invoice.getPricePlusTaxes() + "</div>\n</li>";
+
+        return liItem;
     }
 
 }

@@ -34,43 +34,61 @@ function getNowFormatDate() {
 }
 
 getNowFormatDate();
-setInterval('autoScroll(".maquee")', 2000);
+// setInterval('autoScroll(".maquee")', 2000);
+//
+// // 动态滚动
+// function autoScroll(obj) {
+//     var sz = $(obj).find("ul").find("li").size();
+//     if (sz > 6) {
+//         $(obj).find("ul").animate({
+//                 marginTop: "-37px"
+//             }, 500, function () {
+//                 //var sz = $(this).find("li").size();
+//                 //alert( "Size: " + sz);
+//                 $(this).find("li:first").remove();
+//                 $(this).css({marginTop: "0px"});
+//             })
+//     }
+// }
 
-// 动态滚动
-function autoScroll(obj) {
-    var sz = $(obj).find("ul").find("li").size();
-    if (sz > 6) {
-        $(obj).find("ul").animate({
+setInterval(function(){$.ajax(update)},3000);
+var update = {
+    type: "get",
+    url: "/update",    //向后端请求数据的url
+    data: {},
+    success: function (liItem) {
+        if (liItem) {
+            $(".maquee").find("ul").animate({
                 marginTop: "-37px"
             }, 500, function () {
-                //var sz = $(this).find("li").size();
-                //alert( "Size: " + sz);
+                $(this).append(liItem);
                 $(this).find("li:first").remove();
                 $(this).css({marginTop: "0px"});
             })
-    }
-}
-
-
-//定义一个avalonjs的控制器
-var viewmodel = avalon.define({
-    //id必须和页面上定义的ms-controller名字相同，否则无法控制页面
-    $id: "invoices",
-    datalist: {},
-
-    request: function () {
-        var update = {
-            type: "post",
-            url: "/update",    //向后端请求数据的url
-            data: {},
-            success: function (data) {
-                viewmodel.invoice = data;
-                setTimeout(function (){$.ajax(viewmodel);}, 3000);
-            }
         }
-        $.ajax(update);
     }
-});
+};
+
+
+// //定义一个avalonjs的控制器
+// var viewmodel = avalon.define({
+//     //id必须和页面上定义的ms-controller名字相同，否则无法控制页面
+//     $id: "invoices",
+//     datalist: {},
+//
+//     request: function () {
+//         var update = {
+//             type: "post",
+//             url: "/update",    //向后端请求数据的url
+//             data: {},
+//             success: function (data) {
+//                 viewmodel.invoice = data;
+//                 setTimeout(function (){$.ajax(viewmodel);}, 3000);
+//             }
+//         }
+//         $.ajax(update);
+//     }
+// });
 
 
 
