@@ -3,184 +3,222 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<title>华东师大-欧冶联盟链</title>
-	<meta name="keywords" content="华东师大-欧冶区块链平台" />
-	<meta name="description" content="华东师大-欧冶区块链平台" />
-	<link rel="stylesheet" href="icon/iconfont.css">
-	<script src="js/jquery.min.js"></script>
-	<script src="js/echarts.min.js"></script>
+    <meta charset="utf-8">
+    <title>华东师大-欧冶联盟链</title>
+    <meta name="keywords" content="华东师大-欧冶区块链平台"/>
+    <meta name="description" content="华东师大-欧冶区块链平台"/>
+    <link rel="stylesheet" href="icon/iconfont.css">
+    <link href='css/test-1280.css' rel='stylesheet' type='text/css'>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/myscript.js"></script>
+
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 
-<body>
+<body ms-controller="viewmodel">
 <div class="container-header">
-	<ul class="nowTime">
-		<li></li>
-		<li></li>
-	</ul>
-	<div class="location">
-		<i class="icon iconfont icon-buoumaotubiao23"></i>
-		<span class="areaName"></span>
-	</div>
-	<h3>华东师大-欧冶区块链平台</h3>
+    <ul class="nowTime">
+        <li></li>
+        <li></li>
+    </ul>
+    <div class="location">
+        <i class="icon iconfont icon-buoumaotubiao23"></i>
+        <span class="areaName"></span>
+    </div>
+    <h3>华东师大-欧冶区块链平台</h3>
 </div>
 <div class="container-content">
 
-	<div class="top">
-		<div class="count-share w1" >
-			<div class="com-count-title">发票数据上链</div>
-			<div class="com-screen-content">
-				<div class="topRec_List">
-					<dl>
-						<dd>日期时间</dd>
-						<dd>购买方</dd>
-						<dd>销售方</dd>
-						<dd>价费</dd>
-						<dd>税费</dd>
-						<dd>价税合计</dd>
-					</dl>
-					<div class="maquee">
-						<ul>
-							<li th:each="invoice: ${invoices}">
-								<div th:text="${invoice.invoiceDate}"></div>
-								<div th:text="${invoice.buyerName}"></div>
-								<div th:text="${invoice.sellerName}"></div>
-								<div th:text="${invoice.price}"></div>
-								<div th:text="${invoice.taxes}"></div>
-								<div th:text="${invoice.pricePlusTaxes}"></div>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-		<div class="count-share w2">
-			<div class="com-count-title">交易总量</div>
-			<div class="com-screen-content">
-				<div id="main5" style="width:100%;height:300px;"></div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-	</div>
-	<div class="mid">
-		<div class="count-base">
-			<div class="com-count-title">交易总量构成</div>
-			<div class="com-screen-content">
-
-				<div id="main1" style="width:100%;height:300px;"></div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-		<div class="count-resource q1">
-			<div class="com-count-title">交易总量统计</div>
-			<div class="com-screen-content2">
-				<ul class="use-data">
-					<li>
-						<p class="data-count">15681 </p>
-						<span class="data-name">数据总量</span>
-					</li>
-					<li>
-						<p class="data-count"> 1731</p>
-						<span class="data-name">更新量</span>
-					</li>
-					<li>
-						<p class="data-count">11753</p>
-						<span class="data-name">交易次数</span>
-					</li>
-				</ul>
-				<div class="com-screen-content">
-					<div id="main2" style="margin-top:10px;width:100%;height:240px;"></div>
-				</div>
-				<span class="left-top"></span>
-				<span class="right-top"></span>
-				<span class="left-bottom"></span>
-				<span class="right-bottom"></span>
-			</div>
-		</div>
-		<div class="count-resource q2">
-			<div class="com-count-title">基础库统计</div>
+    <div class="top">
+        <div class="window-left">
+            <div class="com-count-title">发票数据上链</div>
+            <div class="com-screen-content">
+                <div class="topRec_List">
+                    <dl>
+                        <dd>日期时间</dd>
+                        <dd>购买方</dd>
+                        <dd>销售方</dd>
+                        <dd>价费</dd>
+                        <dd>税费</dd>
+                        <dd>价税合计</dd>
+                    </dl>
+                    <div class="maquee">
+                        <ul>
+                            <li th:each="invoice: ${invoices}">
+                                <div th:text="${invoice.invoiceDate}"></div>
+                                <div th:text="${invoice.buyerName}"></div>
+                                <div th:text="${invoice.sellerName}"></div>
+                                <div th:text="${invoice.price}"></div>
+                                <div th:text="${invoice.taxes}"></div>
+                                <div th:text="${invoice.pricePlusTaxes}"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+        <div class="window-right">
+            <div class="com-count-title">区块链信息</div>
+            <div class="com-screen-content">
+                <div id="main5" style="width:100%;height:300px;"></div>
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+    </div>
+    <div class="mid">
+        <div class="count-base">
 
 
-			<div class="com-screen-content">
-				<ul class="data-label">
-					<li class="active" data-type="1">法人库</li>
-					<li data-type="2">人口库</li>
-					<li data-type="3">电子证照库</li>
-				</ul>
-				<ul class="use-data">
+            <div id="app">
+                <el-button @click="visible = true">Button</el-button>
+                <el-dialog :visible.sync="visible" title="Hello world">
+                    <p>Try Element</p>
+                </el-dialog>
+            </div>
+            <script>
+                new Vue({
+                    el: '#app',
+                    data: function() {
+                        return { visible: false }
+                    }
+                })
+            </script>
 
-				</ul>
-				<div id="main3" style="margin-top:10px;width:100%;height:240px;"></div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-	</div>
-	<div class="bottom">
-		<div class="count-topic e1">
-			<div class="com-count-title"></div>
-			<div class="com-screen-content">
-				<div id="main6" style="width:100%;height:300px;"></div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-		<div class="count-topic e2">
-			<div class="com-count-title"></div>
-			<div class="com-screen-content">
-				<div id="main7" style="width:100%;height:300px;"></div>
-			</div>
-			<span class="left-top"></span>
-			<span class="right-top"></span>
-			<span class="left-bottom"></span>
-			<span class="right-bottom"></span>
-		</div>
-	</div>
-	<div class="clearfix"></div>
+            <div>
+                <el-button @click="open">点击打开 Message Box</el-button>
+            </div>
+
+            <script>
+                export default {
+                    methods: {
+                        open() {
+                            this.$prompt('请输入邮箱', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                                inputErrorMessage: '邮箱格式不正确'
+                            }).then(({ value }) => {
+                                this.$message({
+                                    type: 'success',
+                                    message: '你的邮箱是: ' + value
+                                });
+                            }).catch(() => {
+                                this.$message({
+                                    type: 'info',
+                                    message: '取消输入'
+                                });
+                            });
+                        }
+                    }
+                }
+            </script>
+
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+        <div class="count-resource q1">
+            <div class="com-screen-content2">
+                <span class="left-top"></span>
+                <span class="right-top"></span>
+                <span class="left-bottom"></span>
+                <span class="right-bottom"></span>
+            </div>
+        </div>
+        <div class="count-resource q2">
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="count-topic e1">
+            <div class="com-count-title"></div>
+            <div class="com-screen-content">
+                <div id="main6" style="width:100%;height:300px;"></div>
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+        <div class="count-topic e2">
+            <div class="com-count-title"></div>
+            <div class="com-screen-content">
+                <div id="main7" style="width:100%;height:300px;"></div>
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+    </div>
+    <div class="clearfix"></div>
 </div>
 
 <script type="text/javascript">
-	// //根据不同的分辨率调用不同的css和js
-	// if (window.screen.width >= 1600) {
-	// 	document.write("<link href='css/test-1920.css' rel='stylesheet' type='text/css'>");
-	//
-	// 	document.writeln("<script type=\"text/javascript\" src=\"js/test-1920.js\"><\/script>");
-	// }
-	// else if (window.screen.width < 1600 && window.screen.width >= 1280) {
-		document.write("<link href='css/test-1280.css' rel='stylesheet' type='text/css'>");
-
-		document.writeln("<script type=\"text/javascript\" src=\"js/test-1280.js\"><\/script>");
-	// } else {
-	// 	document.write("<link href='css/test-1024.css' rel='stylesheet' type='text/css'>");
-	//
-	// 	document.writeln("<script type=\"text/javascript\" src=\"js/test-1024.js\"><\/script>");
-	// }
-</script>
-<script type="text/javascript">
-	function autoScroll(obj) {
-		$(obj).find("ul").animate({
-			marginTop: "-39px"
-		}, 500, function () {
-			$(this).css({ marginTop: "0px" }).find("li:first").appendTo(this);
-		})
-	}
-	$(function () {
-		setInterval('autoScroll(".maquee")', 2000);
-	})
+    // function autoScroll(obj) {
+    //     $(obj).find("ul").animate({
+    //         marginTop: "-39px"
+    //     }, 500, function () {
+    //         $(this).css({marginTop: "0px"}).find("li:first").appendTo(this);
+    //     })
+    // }
+    //
+    // //获取当前时间
+    // function getNowFormatDate() {
+    //     var date = new Date();
+    //     var year = date.getFullYear();
+    //     var month = date.getMonth() + 1;
+    //     var strDate = date.getDate();
+    //     var Hour = date.getHours();       // 获取当前小时数(0-23)
+    //     var Minute = date.getMinutes();     // 获取当前分钟数(0-59)
+    //     var Second = date.getSeconds();     // 获取当前秒数(0-59)
+    //     var show_day = new Array('星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六');
+    //     var day = date.getDay();
+    //     if (Hour < 10) {
+    //         Hour = "0" + Hour;
+    //     }
+    //     if (Minute < 10) {
+    //         Minute = "0" + Minute;
+    //     }
+    //     if (Second < 10) {
+    //         Second = "0" + Second;
+    //     }
+    //     if (month >= 1 && month <= 9) {
+    //         month = "0" + month;
+    //     }
+    //     if (strDate >= 0 && strDate <= 9) {
+    //         strDate = "0" + strDate;
+    //     }
+    //     var currentdate = '<div><p>' + year + '年' + month + '月' + strDate + '号</p><p>' + show_day[day] + '</p></div>';
+    //     var HMS = Hour + ':' + Minute + ':' + Second;
+    //     var temp_time = year + '-' + month + '-' + strDate + ' ' + HMS;
+    //     $('.nowTime li:nth-child(1)').html(HMS);
+    //     $('.nowTime li:nth-child(2)').html(currentdate);
+    //     //$('.topRec_List li div:nth-child(3)').html(temp_time);
+    //     setTimeout(getNowFormatDate, 1000);//每隔1秒重新调用一次该函数
+    // }
+    //
+    // $(function () {
+    //     setInterval('autoScroll(".maquee")', 2000);
+    //     getNowFormatDate();
+    // })
 </script>
 </body>
 
