@@ -43,6 +43,11 @@ public class InvoiceControl {
 
     private long offset = 6;
 
+
+    public InvoiceControl() {
+
+    }
+
     @RequestMapping("")
     public ModelAndView showInvoice() {
 
@@ -241,19 +246,66 @@ public class InvoiceControl {
     }
 
 
-//    @GetMapping("/insertInvoice")
-//    public String invoiceForm(Model model) {
-//        System.out.println("--------------------------------------------insertInvoice get");
-//        model.addAttribute("invoice", new Invoice());
-//        return "invoice";
-//    }
-
-//
     @PostMapping("/insertInvoice")
     public  String invoiceSubmit(@ModelAttribute Invoice invoice) {
         System.out.println("--------------------------------------------insertInvoice post");
-        System.out.println("hashValue: " + invoice.getHashValue());
-        System.out.println("invoiceNo: " + invoice.getInvoiceNo());
+
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            //STEP 2: Register JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //STEP 3: Open a connection
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("Connected database successfully...");
+
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+
+            String sql = "INSERT INTO invoice VALUES(NULL, " +
+                    "\"" + invoice.getHashValue() +       "\", " +
+                    "\"" + invoice.getInvoiceNo() +       "\", " +
+                    "\"" + invoice.getBuyerName() +       "\", " +
+                    "\"" + invoice.getBuyerTaxesNo() +    "\", " +
+                    "\"" + invoice.getSellerName() +      "\", " +
+                    "\"" + invoice.getSellerTaxesNo() +   "\", " +
+                    "\"" + invoice.getInvoiceDate() +     "\", " +
+                    "\"" + invoice.getInvoiceType() +     "\", " +
+                    "\"" + invoice.getTaxesPoint() +      "\", " +
+                    "\"" + invoice.getTaxes() +           "\", " +
+                    "\"" + invoice.getPrice() +           "\", " +
+                    "\"" + invoice.getPricePlusTaxes() +  "\", " +
+                    "\"" + invoice.getInvoiceNumber() +   "\", " +
+                    "\"" + invoice.getStatementSheet() +  "\", " +
+                    "\"" + invoice.getStatementWeight() + "\", " +
+                    "\"" + invoice.getTimestamp() + "\")";
+
+            System.out.println("sql: " + sql);
+            stmt.execute(sql);
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null)
+                    conn.close();
+            } catch (SQLException se) {
+            }// do nothing
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }//end try
+
         return "redirect:";
     }
 }
