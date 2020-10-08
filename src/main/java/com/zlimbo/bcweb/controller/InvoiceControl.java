@@ -1,5 +1,6 @@
 package com.zlimbo.bcweb.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.citahub.cita.protocol.CITAj;
 import com.citahub.cita.protocol.core.DefaultBlockParameter;
@@ -22,6 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("")
@@ -43,10 +46,6 @@ public class InvoiceControl {
 
     private long offset = 6;
 
-
-    public InvoiceControl() {
-
-    }
 
     @RequestMapping("")
     public ModelAndView showInvoice() {
@@ -122,6 +121,82 @@ public class InvoiceControl {
         modelAndView.addObject("invoice", new Invoice());
 
         return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
+    @ResponseBody
+    public String invoiceQuery(String hashValue) {
+        System.out.println("--------------------------------------------invoiceQuery ok");
+        System.out.println(hashValue);
+        List<Invoice> invoices = new ArrayList<Invoice>();
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            //STEP 2: Register JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //STEP 3: Open a connection
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("Connected database successfully...");
+
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+
+            String sql = "SELECT * FROM invoice WHERE hashValue=\"" + hashValue + "\"";
+            System.out.println("query sql: " + sql);
+            ResultSet resultSet = stmt.executeQuery(sql);
+            //STEP 5: Extract data from result set
+            while (resultSet.next()) {
+                //Retrieve by column name
+                invoices.add(new Invoice(
+                        resultSet.getString("id"),
+                        resultSet.getString("hashValue"),
+                        resultSet.getString("invoiceNo"),
+                        resultSet.getString("buyerName"),
+                        resultSet.getString("buyerTaxesNo"),
+                        resultSet.getString("sellerName"),
+                        resultSet.getString("sellerTaxesNo"),
+                        resultSet.getString("invoiceDate"),
+                        resultSet.getString("invoiceType"),
+                        resultSet.getString("taxesPoint"),
+                        resultSet.getString("taxes"),
+                        resultSet.getString("price"),
+                        resultSet.getString("pricePlusTaxes"),
+                        resultSet.getString("invoiceNumber"),
+                        resultSet.getString("statementSheet"),
+                        resultSet.getString("statementWeight"),
+                        resultSet.getString("timestamp")
+                ));
+            }
+            resultSet.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null)
+                    conn.close();
+            } catch (SQLException se) {
+            }// do nothing
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }
+        if (invoices.isEmpty()) return "";
+        Invoice invoice = invoices.get(0);
+        String jsonString = JSON.toJSONString(invoice);
+        System.out.println("jsonString: " + jsonString);
+        return jsonString;
     }
 
 

@@ -50,6 +50,7 @@ var update = {
     }
 };
 
+
 // 时间
 getNowFormatDate();
 // 数据实时更新 + 滚动
@@ -57,7 +58,7 @@ setInterval(function(){$.ajax(update)},3000);
 // 随机生成发票数据
 $("#randomInvoice").click(function (){
     $.ajax({
-        type: "get",
+        type: "GET",
         url: "/randomInvoice",
         success: function (data) {
             var jsonobj = eval("(" + data + ")");
@@ -82,6 +83,27 @@ $("#randomInvoice").click(function (){
 })
 
 
+// 查询数据
+$(document).on("click", "#btn-invoiceQuery", function () {
+    //var jsonString = JSON.stringify(json);
+    //var data = $('#invoiceForm').serialize()
+    // alert(jsonString)
+    var data = {"hashValue": $("#hashValueForQuery").val()}
+    alert(JSON.stringify(data));
+    $.ajax({
+        type: 'GET',
+        url: '/invoiceQuery',
+        dataType: 'text',
+        data: data,
+        error: function (request) {
+            alert("提交失败！");
+        },
+        success: function (data) {
+                var jsonobj = eval("(" + data + ")");
+                alert(jsonobj);
+        }
+    })
+})
 
 
 
