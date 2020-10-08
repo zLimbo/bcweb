@@ -33,7 +33,58 @@ function getNowFormatDate() {
     setTimeout(getNowFormatDate, 1000);//每隔1秒重新调用一次该函数
 }
 
+
+var update = {
+    type: "get",
+    url: "/update",    //向后端请求数据的url
+    success: function (liItem) {
+        if (liItem) {
+            $(".maquee").find("ul").animate({
+                marginTop: "-37px"
+            }, 500, function () {
+                $(this).append(liItem);
+                $(this).find("li:first").remove();
+                $(this).css({marginTop: "0px"});
+            })
+        }
+    }
+};
+
+// 时间
 getNowFormatDate();
+// 数据实时更新 + 滚动
+setInterval(function(){$.ajax(update)},3000);
+// 随机生成发票数据
+$("#randomInvoice").click(function (){
+    $.ajax({
+        type: "get",
+        url: "/randomInvoice",
+        success: function (data) {
+            var jsonobj = eval("(" + data + ")");
+            $("#hashValue").val(jsonobj.hashValue);
+            $("#invoiceNo").val(jsonobj.invoiceNo);
+            $("#buyerName").val(jsonobj.buyerName);
+            $("#buyerTaxesNo").val(jsonobj.buyerTaxesNo);
+            $("#sellerName").val(jsonobj.sellerName);
+            $("#sellerTaxesNo").val(jsonobj.sellerTaxesNo);
+            $("#invoiceDate").val(jsonobj.invoiceDate);
+            $("#invoiceType").val(jsonobj.invoiceType);
+            $("#taxesPoint").val(jsonobj.taxesPoint);
+            $("#taxes").val(jsonobj.taxes);
+            $("#price").val(jsonobj.price);
+            $("#pricePlusTaxes").val(jsonobj.pricePlusTaxes);
+            $("#invoiceNumber").val(jsonobj.invoiceNumber);
+            $("#statementSheet").val(jsonobj.statementSheet);
+            $("#statementWeight").val(jsonobj.statementWeight);
+            $("#timestamp").val(jsonobj.timestamp);
+        }
+    })
+})
+
+
+
+
+
 // setInterval('autoScroll(".maquee")', 2000);
 //
 // // 动态滚动
@@ -50,25 +101,6 @@ getNowFormatDate();
 //             })
 //     }
 // }
-
-setInterval(function(){$.ajax(update)},3000);
-var update = {
-    type: "get",
-    url: "/update",    //向后端请求数据的url
-    data: {},
-    success: function (liItem) {
-        if (liItem) {
-            $(".maquee").find("ul").animate({
-                marginTop: "-37px"
-            }, 500, function () {
-                $(this).append(liItem);
-                $(this).find("li:first").remove();
-                $(this).css({marginTop: "0px"});
-            })
-        }
-    }
-};
-
 
 // //定义一个avalonjs的控制器
 // var viewmodel = avalon.define({
@@ -89,7 +121,6 @@ var update = {
 //         $.ajax(update);
 //     }
 // });
-
 
 
 // var getting = {

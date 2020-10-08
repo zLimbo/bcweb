@@ -2,6 +2,7 @@ package com.zlimbo.bcweb.domain;
 
 public class Invoice {
 
+
     private String id;
     private String hashValue;
     private String invoiceNo;
@@ -19,6 +20,8 @@ public class Invoice {
     private String statementSheet;
     private String statementWeight;
     private String timestamp;
+
+    public Invoice() { }
 
     public Invoice(String id,
                    String hashValue,

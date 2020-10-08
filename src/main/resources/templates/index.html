@@ -7,18 +7,20 @@
     <title>华东师大-欧冶联盟链</title>
     <meta name="keywords" content="华东师大-欧冶区块链平台"/>
     <meta name="description" content="华东师大-欧冶区块链平台"/>
+    <script src="js/echarts.min.js"></script>
     <link rel="stylesheet" href="icon/iconfont.css">
     <link href='css/test-1280.css' rel='stylesheet' type='text/css'>
     <script src="js/jquery.min.js"></script>
-    <script src="js/echarts.min.js"></script>
-    <script src="js/myscript.js"></script>
 
-    <!-- import Vue before Element -->
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body ms-controller="viewmodel">
@@ -80,51 +82,123 @@
     </div>
     <div class="mid">
         <div class="count-base">
-
-
-            <div id="app">
-                <el-button @click="visible = true">Button</el-button>
-                <el-dialog :visible.sync="visible" title="Hello world">
-                    <p>Try Element</p>
-                </el-dialog>
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">插入发票数据</button>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">发票数据</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form" action="#"
+                                  th:action="@{/insertInvoice}" th:object="${invoice}" method="post">
+                                <div class="form-group">
+                                    <label for="hashValue" class="col-sm-2 control-label" th:field="*{hashValue}">哈希值</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="hashValue">
+                                    </div>
+                                    <label for="invoiceNo" class="col-sm-2 control-label" th:field="*{invoiceNo}">发票号</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="invoiceNo">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="buyerName" class="col-sm-2 control-label" th:field="*{buyerName}">购方全称</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="buyerName">
+                                    </div>
+                                    <label for="buyerTaxesNo" class="col-sm-2 control-label" th:field="*{buyerTaxesNo}">购方税号</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="buyerTaxesNo">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sellerName" class="col-sm-2 control-label" th:field="*{sellerName}">销方全称</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="sellerName">
+                                    </div>
+                                    <label for="sellerTaxesNo" class="col-sm-2 control-label" th:field="*{sellerTaxesNo}">销方税号</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="sellerTaxesNo">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoiceDate" class="col-sm-2 control-label" th:field="*{invoiceDate}">发票日期</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="invoiceDate">
+                                    </div>
+                                    <label for="invoiceType" class="col-sm-2 control-label" th:field="*{invoiceType}">发票类型</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="invoiceType">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="taxesPoint" class="col-sm-2 control-label" th:field="*{taxesPoint}">税点</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="taxesPoint">
+                                    </div>
+                                    <label for="taxes" class="col-sm-2 control-label" th:field="*{taxes}">税费</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="taxes">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price" class="col-sm-2 control-label" th:field="*{price}">价费</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="price">
+                                    </div>
+                                    <label for="pricePlusTaxes" class="col-sm-2 control-label" th:field="*{pricePlusTaxes}">价税合计</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="pricePlusTaxes">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoiceNumber" class="col-sm-2 control-label" th:field="*{invoiceNumber}">发票数量</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="invoiceNumber">
+                                    </div>
+                                    <label for="statementSheet" class="col-sm-2 control-label" th:field="*{statementSheet}">结算单</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="statementSheet">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="statementWeight" class="col-sm-2 control-label" th:field="*{statementWeight}">结算重量</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="statementWeight">
+                                    </div>
+                                    <label for="timestamp" class="col-sm-2 control-label" th:field="*{timestamp}">时间戳</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="timestamp">
+                                    </div>
+                                </div>
+<!--                                <button type="button" class="btn btn-default" id="randomInvoice">随机生成</button>-->
+<!--                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                                <button type="button" class="btn btn-primary">上传</button>-->
+                                <div class="form-group">
+                                    <div class="col-sm-offset-1 col-md-2">
+                                        <button type="button" class="btn btn-default" id="randomInvoice">随机生成</button>
+                                    </div>
+                                    <div class="col-sm-offset-1 col-md-2">
+                                        <button type="reset" class="btn btn-default" id="btn-test">重置</button>
+                                    </div>
+                                    <div class="col-sm-offset-1 col-md-2">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    </div>
+                                    <div class="col-sm-offset-1 col-md-2">
+                                        <button type="submit" class="btn btn-primary" id="btn-test">提交</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
             </div>
-            <script>
-                new Vue({
-                    el: '#app',
-                    data: function() {
-                        return { visible: false }
-                    }
-                })
-            </script>
-
-            <div>
-                <el-button @click="open">点击打开 Message Box</el-button>
-            </div>
-
-            <script>
-                export default {
-                    methods: {
-                        open() {
-                            this.$prompt('请输入邮箱', '提示', {
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-                                inputErrorMessage: '邮箱格式不正确'
-                            }).then(({ value }) => {
-                                this.$message({
-                                    type: 'success',
-                                    message: '你的邮箱是: ' + value
-                                });
-                            }).catch(() => {
-                                this.$message({
-                                    type: 'info',
-                                    message: '取消输入'
-                                });
-                            });
-                        }
-                    }
-                }
-            </script>
 
             <span class="left-top"></span>
             <span class="right-top"></span>
@@ -171,55 +245,6 @@
     <div class="clearfix"></div>
 </div>
 
-<script type="text/javascript">
-    // function autoScroll(obj) {
-    //     $(obj).find("ul").animate({
-    //         marginTop: "-39px"
-    //     }, 500, function () {
-    //         $(this).css({marginTop: "0px"}).find("li:first").appendTo(this);
-    //     })
-    // }
-    //
-    // //获取当前时间
-    // function getNowFormatDate() {
-    //     var date = new Date();
-    //     var year = date.getFullYear();
-    //     var month = date.getMonth() + 1;
-    //     var strDate = date.getDate();
-    //     var Hour = date.getHours();       // 获取当前小时数(0-23)
-    //     var Minute = date.getMinutes();     // 获取当前分钟数(0-59)
-    //     var Second = date.getSeconds();     // 获取当前秒数(0-59)
-    //     var show_day = new Array('星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六');
-    //     var day = date.getDay();
-    //     if (Hour < 10) {
-    //         Hour = "0" + Hour;
-    //     }
-    //     if (Minute < 10) {
-    //         Minute = "0" + Minute;
-    //     }
-    //     if (Second < 10) {
-    //         Second = "0" + Second;
-    //     }
-    //     if (month >= 1 && month <= 9) {
-    //         month = "0" + month;
-    //     }
-    //     if (strDate >= 0 && strDate <= 9) {
-    //         strDate = "0" + strDate;
-    //     }
-    //     var currentdate = '<div><p>' + year + '年' + month + '月' + strDate + '号</p><p>' + show_day[day] + '</p></div>';
-    //     var HMS = Hour + ':' + Minute + ':' + Second;
-    //     var temp_time = year + '-' + month + '-' + strDate + ' ' + HMS;
-    //     $('.nowTime li:nth-child(1)').html(HMS);
-    //     $('.nowTime li:nth-child(2)').html(currentdate);
-    //     //$('.topRec_List li div:nth-child(3)').html(temp_time);
-    //     setTimeout(getNowFormatDate, 1000);//每隔1秒重新调用一次该函数
-    // }
-    //
-    // $(function () {
-    //     setInterval('autoScroll(".maquee")', 2000);
-    //     getNowFormatDate();
-    // })
-</script>
 </body>
-
+<script src="js/myscript.js"></script>
 </html>
