@@ -96,83 +96,83 @@
                             <form class="form-horizontal" role="form" action="#"
                                   th:action="@{/insertInvoice}" th:object="${invoice}" method="post">
                                 <div class="form-group">
-                                    <label for="hashValue" class="col-sm-2 control-label" th:field="*{hashValue}">哈希值</label>
+                                    <label for="hashValue" class="col-sm-2 control-label">哈希值</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="hashValue">
+                                        <input type="text" class="form-control" id="hashValue" th:field="*{hashValue}">
                                     </div>
-                                    <label for="invoiceNo" class="col-sm-2 control-label" th:field="*{invoiceNo}">发票号</label>
+                                    <label for="invoiceNo" class="col-sm-2 control-label">发票号</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="invoiceNo">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="buyerName" class="col-sm-2 control-label" th:field="*{buyerName}">购方全称</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="buyerName">
-                                    </div>
-                                    <label for="buyerTaxesNo" class="col-sm-2 control-label" th:field="*{buyerTaxesNo}">购方税号</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="buyerTaxesNo">
+                                        <input type="text" class="form-control" id="invoiceNo" th:field="*{invoiceNo}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="sellerName" class="col-sm-2 control-label" th:field="*{sellerName}">销方全称</label>
+                                    <label for="buyerName" class="col-sm-2 control-label">购方全称</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="sellerName">
+                                        <input type="text" class="form-control" id="buyerName" th:field="*{buyerName}">
                                     </div>
-                                    <label for="sellerTaxesNo" class="col-sm-2 control-label" th:field="*{sellerTaxesNo}">销方税号</label>
+                                    <label for="buyerTaxesNo" class="col-sm-2 control-label">购方税号</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="sellerTaxesNo">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="invoiceDate" class="col-sm-2 control-label" th:field="*{invoiceDate}">发票日期</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="invoiceDate">
-                                    </div>
-                                    <label for="invoiceType" class="col-sm-2 control-label" th:field="*{invoiceType}">发票类型</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="invoiceType">
+                                        <input type="text" class="form-control" id="buyerTaxesNo" th:field="*{buyerTaxesNo}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="taxesPoint" class="col-sm-2 control-label" th:field="*{taxesPoint}">税点</label>
+                                    <label for="sellerName" class="col-sm-2 control-label">销方全称</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="taxesPoint">
+                                        <input type="text" class="form-control" id="sellerName" th:field="*{sellerName}">
                                     </div>
-                                    <label for="taxes" class="col-sm-2 control-label" th:field="*{taxes}">税费</label>
+                                    <label for="sellerTaxesNo" class="col-sm-2 control-label">销方税号</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="taxes">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="price" class="col-sm-2 control-label" th:field="*{price}">价费</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="price">
-                                    </div>
-                                    <label for="pricePlusTaxes" class="col-sm-2 control-label" th:field="*{pricePlusTaxes}">价税合计</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="pricePlusTaxes">
+                                        <input type="text" class="form-control" id="sellerTaxesNo" th:field="*{sellerTaxesNo}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="invoiceNumber" class="col-sm-2 control-label" th:field="*{invoiceNumber}">发票数量</label>
+                                    <label for="invoiceDate" class="col-sm-2 control-label">发票日期</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="invoiceNumber">
+                                        <input type="text" class="form-control" id="invoiceDate" th:field="*{invoiceDate}">
                                     </div>
-                                    <label for="statementSheet" class="col-sm-2 control-label" th:field="*{statementSheet}">结算单</label>
+                                    <label for="invoiceType" class="col-sm-2 control-label">发票类型</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="statementSheet">
+                                        <input type="text" class="form-control" id="invoiceType" th:field="*{invoiceType}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="statementWeight" class="col-sm-2 control-label" th:field="*{statementWeight}">结算重量</label>
+                                    <label for="taxesPoint" class="col-sm-2 control-label">税点</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="statementWeight">
+                                        <input type="text" class="form-control" id="taxesPoint" th:field="*{taxesPoint}">
                                     </div>
-                                    <label for="timestamp" class="col-sm-2 control-label" th:field="*{timestamp}">时间戳</label>
+                                    <label for="taxes" class="col-sm-2 control-label">税费</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" id="timestamp">
+                                        <input type="text" class="form-control" id="taxes" th:field="*{taxes}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price" class="col-sm-2 control-label">价费</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="price" th:field="*{price}">
+                                    </div>
+                                    <label for="pricePlusTaxes" class="col-sm-2 control-label">价税合计</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="pricePlusTaxes" th:field="*{pricePlusTaxes}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoiceNumber" class="col-sm-2 control-label">发票数量</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="invoiceNumber" th:field="*{invoiceNumber}">
+                                    </div>
+                                    <label for="statementSheet" class="col-sm-2 control-label">结算单</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="statementSheet" th:field="*{statementSheet}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="statementWeight" class="col-sm-2 control-label">结算重量</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="statementWeight" th:field="*{statementWeight}">
+                                    </div>
+                                    <label for="timestamp" class="col-sm-2 control-label">时间戳</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="timestamp" th:field="*{timestamp}">
                                     </div>
                                 </div>
 <!--                                <button type="button" class="btn btn-default" id="randomInvoice">随机生成</button>-->

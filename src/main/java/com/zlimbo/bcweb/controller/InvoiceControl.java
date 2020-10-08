@@ -249,13 +249,13 @@ public class InvoiceControl {
 //    }
 
 //
-//    @PostMapping("/insertInvoice")
-//    public  String invoiceSubmit(@ModelAttribute Invoice invoice) {
-//        System.out.println("--------------------------------------------insertInvoice post");
-//        System.out.println("hashValue: " + invoice.getHashValue());
-//        System.out.println("invoiceNo: " + invoice.getInvoiceNo());
-//        return "index";
-//    }
+    @PostMapping("/insertInvoice")
+    public  String invoiceSubmit(@ModelAttribute Invoice invoice) {
+        System.out.println("--------------------------------------------insertInvoice post");
+        System.out.println("hashValue: " + invoice.getHashValue());
+        System.out.println("invoiceNo: " + invoice.getInvoiceNo());
+        return "redirect:";
+    }
 }
 
 
