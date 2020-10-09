@@ -82,14 +82,14 @@ $("#randomInvoice").click(function (){
     })
 })
 
-
 // 查询数据
-$(document).on("click", "#btn-invoiceQuery", function () {
+$("#btn-invoiceQuery").click(function (){
+// $(document).on("click", "#btn-invoiceQuery", function () {
     //var jsonString = JSON.stringify(json);
     //var data = $('#invoiceForm').serialize()
     // alert(jsonString)
     var data = {"hashValue": $("#hashValueForQuery").val()}
-    alert(JSON.stringify(data));
+    //alert(JSON.stringify(data));
     $.ajax({
         type: 'GET',
         url: '/invoiceQuery',
@@ -99,12 +99,48 @@ $(document).on("click", "#btn-invoiceQuery", function () {
             alert("提交失败！");
         },
         success: function (data) {
-                var jsonobj = eval("(" + data + ")");
-                alert(jsonobj);
+            var jsonobj = eval("(" + data + ")");
+            $("#query-hashValue").val(jsonobj.hashValue);
+            $("#query-invoiceNo").val(jsonobj.invoiceNo);
+            $("#query-buyerName").val(jsonobj.buyerName);
+            $("#query-buyerTaxesNo").val(jsonobj.buyerTaxesNo);
+            $("#query-sellerName").val(jsonobj.sellerName);
+            $("#query-sellerTaxesNo").val(jsonobj.sellerTaxesNo);
+            $("#query-invoiceDate").val(jsonobj.invoiceDate);
+            $("#query-invoiceType").val(jsonobj.invoiceType);
+            $("#query-taxesPoint").val(jsonobj.taxesPoint);
+            $("#query-taxes").val(jsonobj.taxes);
+            $("#query-price").val(jsonobj.price);
+            $("#query-pricePlusTaxes").val(jsonobj.pricePlusTaxes);
+            $("#query-invoiceNumber").val(jsonobj.invoiceNumber);
+            $("#query-statementSheet").val(jsonobj.statementSheet);
+            $("#query-statementWeight").val(jsonobj.statementWeight);
+            $("#query-timestamp").val(jsonobj.timestamp);
         }
     })
 })
 
+// // 查询数据
+// $(document).on("click", "#btn-invoiceQuery", function () {
+//     //var jsonString = JSON.stringify(json);
+//     //var data = $('#invoiceForm').serialize()
+//     // alert(jsonString)
+//     var data = {"hashValue": $("#hashValueForQuery").val()}
+//     alert(JSON.stringify(data));
+//     $.ajax({
+//         type: 'GET',
+//         url: '/invoiceQuery',
+//         dataType: 'text',
+//         data: data,
+//         error: function (request) {
+//             alert("提交失败！");
+//         },
+//         success: function (data) {
+//             var jsonobj = eval("(" + data + ")");
+//             alert(data);
+//         }
+//     })
+// })
 
 
 // setInterval('autoScroll(".maquee")', 2000);

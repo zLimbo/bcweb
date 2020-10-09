@@ -3,16 +3,11 @@ package com.zlimbo.bcweb.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.citahub.cita.protocol.CITAj;
-import com.citahub.cita.protocol.core.DefaultBlockParameter;
-import com.citahub.cita.protocol.core.methods.response.*;
+import com.citahub.cita.protocol.core.methods.response.AppBlockNumber;
+import com.citahub.cita.protocol.core.methods.response.NetPeerCount;
 import com.citahub.cita.protocol.http.HttpService;
 import com.zlimbo.bcweb.domain.Invoice;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,8 +18,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Controller
 @RequestMapping("")
@@ -47,8 +40,14 @@ public class InvoiceControl {
     private long offset = 6;
 
 
+//    @RequestMapping("index2")
+//    public ModelAndView index2() {
+//        return new ModelAndView("index");
+//    }
+
+
     @RequestMapping("")
-    public ModelAndView showInvoice() {
+    public ModelAndView showInvoice() throws IOException {
 
         List<Invoice> invoices = new ArrayList<Invoice>();
         Connection conn = null;
@@ -116,9 +115,17 @@ public class InvoiceControl {
         //if (offset == 6 && invoices.size() < offset) offset = invoices.size();
         System.out.println("offset: " + offset);
 
+        CITAj citAj = CITAj.build(new HttpService("https://testnet.citahub.com"));
+        NetPeerCount netPeerCount = citAj.netPeerCount().send();
+        BigInteger peerCount = netPeerCount.getQuantity();
+        AppBlockNumber appBlockNumber = citAj.appBlockNumber().send();
+        BigInteger blockNumber = appBlockNumber.getBlockNumber();
+
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("invoices", invoices);
         modelAndView.addObject("invoice", new Invoice());
+        modelAndView.addObject("peerCount", peerCount);
+        modelAndView.addObject("blockNumber", blockNumber);
 
         return modelAndView;
     }
