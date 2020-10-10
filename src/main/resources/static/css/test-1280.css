@@ -114,11 +114,6 @@ div{
     border-bottom:solid 2px #045291;
 }
 
-.resource-right .com-count-title{
-    font-size: 16px;
-    margin-left: 10px;
-
-}
 .com-count-title{
     color:#1bb4f9;
     padding:20px;
@@ -134,30 +129,6 @@ div{
     width:100%;
     height:auto;
 }
-.filter-type{
-    font-size: 0;
-}
-.filter-type li:hover{
-    cursor: pointer;
-}
-.filter-type li{
-    display: inline-block;
-    width:120px;
-    line-height: 40px;
-    font-family: myFirstFont;
-    font-size: 20px;
-    text-align:center ;
-    color:#024f9b;
-    border:solid 1px #075797;
-    background:#0d2343;
-}
-.filter-type li.active{
-    color:white;
-    background:#0c182d;
-    border:solid 1px #1bb9f9;
-}
-
-
 
 
 .container-content{
@@ -165,36 +136,21 @@ div{
 	box-sizing: border-box;
     height:520px;
 }
-.count-base,.count-resource,.window-left, .window-right, .count-topic{
+
+.window-left, .window-right{
     position:relative;
     padding:20px;
     margin-top: 10px;
     box-sizing: border-box;
 }
+
 .com-count-title{
 	
     color:#1bb4f9;
     font-size: 16px;
     padding:0;
 }
-.count-base{
-	
-	margin-left:10px;
-	float:left;/*浮动*/
-    width:32%;
-    height:350px; 
-    background: url('../images/left-top3.jpg') center no-repeat;
-	background-size:cover;
-	
-}
-.count-resource{
-	margin-left:10px;
-	float:left;
-	width:32%;
-    height:350px; 
-    background: url('../images/left-top3.jpg') center no-repeat;
-	background-size:cover;
-}
+
 .window-left {
 	margin-left:10px;
 	float:left;
@@ -213,31 +169,7 @@ div{
     background-size:cover;
 }
 
-.count-topic{
-	margin-left:10px;
-	float:left;
-	width:48.4%;
-    height:350px; 
-    background: url('../images/left-bottom2.jpg') center no-repeat;
-	background-size:cover;
-}
-.data-label{
-	position:absolute;
-	top:20px;
-	right:10px;
-}
-.data-label li{
-	float:left;
-    width: 90px;
 
-	text-align: center;
-    font-size: 16px;
-    color: #828c9d;
-}
-.data-label li:hover,.data-label li.active{
-    color: #fff;
-    background: url("../images/choose-item.png") center no-repeat;
-}
 
 
 
@@ -273,35 +205,3 @@ a{text-decoration:none;}
 .topRec_List li div:nth-child(4){ width:15%;}
 .topRec_List li div:nth-child(5){ width:15%;}
 .topRec_List li div:nth-child(6){ width:15%;}
-
-
-.use-data{
-    text-align: center;
-    padding: 2px 0;
-    margin-top:3%;
-    height: 5%;
-    background: url(../images/resource-use-data.jpg) center no-repeat;
-	background-size:cover;
-    border: solid 1px #093552;
-    border-right: 0px;
-    border-left: 0;
-}
-.use-data li{
-    width:30%;
-    font-size: 0;
-    display: inline-table;
-    border-right:solid 1px #1f4191;
-}
-.use-data li:last-child{
-    border-right:0;
-}
-.use-data .data-count{
-    color:#fff;
-    font-family:myFirstFont ;
-    height: 1%;
-    font-size: 14px;
-}
-.use-data .data-name{
-    color:#1bb9f9;
-    font-size: 14px;
-}

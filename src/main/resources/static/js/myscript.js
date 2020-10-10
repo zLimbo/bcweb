@@ -78,9 +78,11 @@ $("#randomInvoice").click(function (){
             $("#statementSheet").val(jsonobj.statementSheet);
             $("#statementWeight").val(jsonobj.statementWeight);
             $("#timestamp").val(jsonobj.timestamp);
+            $("#contractAddress").val(jsonobj.contractAddress);
         }
     })
 })
+
 
 // 查询数据
 $("#btn-invoiceQuery").click(function (){
@@ -116,6 +118,34 @@ $("#btn-invoiceQuery").click(function (){
             $("#query-statementSheet").val(jsonobj.statementSheet);
             $("#query-statementWeight").val(jsonobj.statementWeight);
             $("#query-timestamp").val(jsonobj.timestamp);
+            $("#query-contractAddress").val(jsonobj.contractAddress);
+        }
+    })
+})
+
+
+// 插入数据
+$("#btn-invoiceInsert").click(function () {
+    var json=$("#form-invoiceInsert").serializeJSON();
+    //alert(json);
+    var jsonString = JSON.stringify(json);
+    //alert(jsonString);
+
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        type: 'POST',
+        url: '/invoiceInsert',
+        data: jsonString,
+        error: function (request) {
+            alert("插入失败！");
+        },
+        success: function (liItem) {
+            //alert(liItem);
+            if (liItem) {
+                $(".maquee").find("ul").append(liItem);
+            }
+            $("#myModal-invoiceInsert").modal('hide');
+
         }
     })
 })

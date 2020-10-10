@@ -17,7 +17,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("")
@@ -37,17 +39,13 @@ public class InvoiceControl {
     static final String USER = "root";
     static final String PASS = "123456";
 
+
+
+
     private long offset = 6;
 
-
-//    @RequestMapping("index2")
-//    public ModelAndView index2() {
-//        return new ModelAndView("index");
-//    }
-
-
     @RequestMapping("")
-    public ModelAndView showInvoice() throws IOException {
+    public ModelAndView invoiceShow() throws IOException {
 
         List<Invoice> invoices = new ArrayList<Invoice>();
         Connection conn = null;
@@ -65,13 +63,12 @@ public class InvoiceControl {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM invoice LIMIT " + (offset - 6) + ", 6";
+            String sql = "SELECT * FROM invoice ORDER BY timestamp LIMIT " + (offset - 6) + ", 6";
             ResultSet resultSet = stmt.executeQuery(sql);
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
                 //Retrieve by column name
                 invoices.add(new Invoice(
-                        resultSet.getString("id"),
                         resultSet.getString("hashValue"),
                         resultSet.getString("invoiceNo"),
                         resultSet.getString("buyerName"),
@@ -87,7 +84,8 @@ public class InvoiceControl {
                         resultSet.getString("invoiceNumber"),
                         resultSet.getString("statementSheet"),
                         resultSet.getString("statementWeight"),
-                        resultSet.getString("timestamp")
+                        resultSet.getString("timestamp"),
+                        resultSet.getString("contractAddress")
                 ));
             }
             resultSet.close();
@@ -159,7 +157,6 @@ public class InvoiceControl {
             while (resultSet.next()) {
                 //Retrieve by column name
                 invoices.add(new Invoice(
-                        resultSet.getString("id"),
                         resultSet.getString("hashValue"),
                         resultSet.getString("invoiceNo"),
                         resultSet.getString("buyerName"),
@@ -175,7 +172,8 @@ public class InvoiceControl {
                         resultSet.getString("invoiceNumber"),
                         resultSet.getString("statementSheet"),
                         resultSet.getString("statementWeight"),
-                        resultSet.getString("timestamp")
+                        resultSet.getString("timestamp"),
+                        resultSet.getString("contractAddress")
                 ));
             }
             resultSet.close();
@@ -209,7 +207,7 @@ public class InvoiceControl {
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     @ResponseBody
-    public String update() {
+    public String invoiceUpdate() {
 
         List<Invoice> invoices = new ArrayList<Invoice>();
         Connection conn = null;
@@ -227,13 +225,12 @@ public class InvoiceControl {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM invoice LIMIT " + offset + ", 1";
+            String sql = "SELECT * FROM invoice ORDER BY timestamp LIMIT " + offset + ", 1";
             ResultSet resultSet = stmt.executeQuery(sql);
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
                 //Retrieve by column name
                 invoices.add(new Invoice(
-                        resultSet.getString("id"),
                         resultSet.getString("hashValue"),
                         resultSet.getString("invoiceNo"),
                         resultSet.getString("buyerName"),
@@ -249,7 +246,8 @@ public class InvoiceControl {
                         resultSet.getString("invoiceNumber"),
                         resultSet.getString("statementSheet"),
                         resultSet.getString("statementWeight"),
-                        resultSet.getString("timestamp")
+                        resultSet.getString("timestamp"),
+                        resultSet.getString("contractAddress")
                 ));
             }
             resultSet.close();
@@ -291,47 +289,19 @@ public class InvoiceControl {
     }
 
 
+
     @RequestMapping(value = "/randomInvoice", method = RequestMethod.GET)
     @ResponseBody
     public String randomInvoice() throws NoSuchAlgorithmException {
         System.out.println("--------------------------------------------randomInvoice ok");
-        JSONObject jsonObject = new JSONObject();
-        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-        messageDigest.update(String.valueOf(System.currentTimeMillis()).getBytes());
-        BigInteger bigInteger = new BigInteger(1, messageDigest.digest());
-        String hashValue = "0x" + bigInteger.toString(16);
-        String[] keys = {
-           "hashValue",
-           "invoiceNo",
-           "buyerName",
-           "buyerTaxesNo",
-           "sellerName",
-           "sellerTaxesNo",
-           "invoiceDate",
-           "invoiceType",
-           "taxesPoint",
-           "taxes",
-           "price",
-           "pricePlusTaxes",
-           "invoiceNumber",
-           "statementSheet",
-           "statementWeight",
-           "timestamp"
-        };
-        jsonObject.put(keys[0], hashValue);
-        for (int i = 1; i < keys.length; ++i) {
-            jsonObject.put(keys[i], hashValue.substring(i * 2, i * 2 + 2));
-        }
-
-        System.out.println("randomInvoice: " + jsonObject.toJSONString());
-        return jsonObject.toJSONString();
+        return JSON.toJSONString(Invoice.getRandomInvoice());
     }
 
 
-    @PostMapping("/insertInvoice")
-    public  String invoiceSubmit(@ModelAttribute Invoice invoice) {
-        System.out.println("--------------------------------------------insertInvoice post");
-
+    @RequestMapping("/invoiceInsert")
+    @ResponseBody
+    public String invoiceInsert(@RequestBody Invoice invoice) {
+        System.out.println("--------------------------------------------invoiceInsert ok");
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -347,7 +317,7 @@ public class InvoiceControl {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "INSERT INTO invoice VALUES(NULL, " +
+            String sql = "INSERT INTO invoice VALUES(" +
                     "\"" + invoice.getHashValue() +       "\", " +
                     "\"" + invoice.getInvoiceNo() +       "\", " +
                     "\"" + invoice.getBuyerName() +       "\", " +
@@ -363,7 +333,8 @@ public class InvoiceControl {
                     "\"" + invoice.getInvoiceNumber() +   "\", " +
                     "\"" + invoice.getStatementSheet() +  "\", " +
                     "\"" + invoice.getStatementWeight() + "\", " +
-                    "\"" + invoice.getTimestamp() + "\")";
+                    "\"" + invoice.getTimestamp() +       "\", " +
+                    "\"" + invoice.getContractAddress() + "\")";
 
             System.out.println("sql: " + sql);
             stmt.execute(sql);
@@ -387,9 +358,85 @@ public class InvoiceControl {
                 se.printStackTrace();
             }//end finally try
         }//end try
+        if (offset == 6) {
+            String liItem = "<li>\n<div>" +
+                    invoice.getInvoiceDate() + "</div>\n<div>" +
+                    invoice.getBuyerName() + "</div>\n<div>" +
+                    invoice.getSellerName() + "</div>\n<div>" +
+                    invoice.getPrice() + "</div>\n<div>" +
+                    invoice.getTaxes() + "</div>\n<div>" +
+                    invoice.getPricePlusTaxes() + "</div>\n</li>";
 
-        return "redirect:";
+            return liItem;
+        }
+        return "";
     }
+
+//    @ResponseBody
+//    @PostMapping("/insertInvoice")
+//    public String invoiceSubmit(@ModelAttribute Invoice invoice) {
+//        System.out.println("--------------------------------------------insertInvoice post");
+//
+//        Connection conn = null;
+//        Statement stmt = null;
+//        try {
+//            //STEP 2: Register JDBC driver
+//            Class.forName("com.mysql.jdbc.Driver");
+//
+//            //STEP 3: Open a connection
+//            System.out.println("Connecting to a selected database...");
+//            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//            System.out.println("Connected database successfully...");
+//
+//            //STEP 4: Execute a query
+//            System.out.println("Creating statement...");
+//            stmt = conn.createStatement();
+//
+//            String sql = "INSERT INTO invoice VALUES(NULL, " +
+//                    "\"" + invoice.getHashValue() +       "\", " +
+//                    "\"" + invoice.getInvoiceNo() +       "\", " +
+//                    "\"" + invoice.getBuyerName() +       "\", " +
+//                    "\"" + invoice.getBuyerTaxesNo() +    "\", " +
+//                    "\"" + invoice.getSellerName() +      "\", " +
+//                    "\"" + invoice.getSellerTaxesNo() +   "\", " +
+//                    "\"" + invoice.getInvoiceDate() +     "\", " +
+//                    "\"" + invoice.getInvoiceType() +     "\", " +
+//                    "\"" + invoice.getTaxesPoint() +      "\", " +
+//                    "\"" + invoice.getTaxes() +           "\", " +
+//                    "\"" + invoice.getPrice() +           "\", " +
+//                    "\"" + invoice.getPricePlusTaxes() +  "\", " +
+//                    "\"" + invoice.getInvoiceNumber() +   "\", " +
+//                    "\"" + invoice.getStatementSheet() +  "\", " +
+//                    "\"" + invoice.getStatementWeight() + "\", " +
+//                    "\"" + invoice.getTimestamp() +       "\")";
+//
+//            System.out.println("sql: " + sql);
+//            stmt.execute(sql);
+//        } catch (SQLException se) {
+//            //Handle errors for JDBC
+//            se.printStackTrace();
+//        } catch (Exception e) {
+//            //Handle errors for Class.forName
+//            e.printStackTrace();
+//        } finally {
+//            //finally block used to close resources
+//            try {
+//                if (stmt != null)
+//                    conn.close();
+//            } catch (SQLException se) {
+//            }// do nothing
+//            try {
+//                if (conn != null)
+//                    conn.close();
+//            } catch (SQLException se) {
+//                se.printStackTrace();
+//            }//end finally try
+//        }//end try
+//
+//        return "redirect:";
+//    }
+
+
 }
 
 
