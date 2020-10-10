@@ -34,9 +34,9 @@ function getNowFormatDate() {
 }
 
 
-var update = {
+var invoiceUpdate = {
     type: "get",
-    url: "/update",    //向后端请求数据的url
+    url: "/invoiceUpdate",    //向后端请求数据的url
     success: function (liItem) {
         if (liItem) {
             $(".maquee").find("ul").animate({
@@ -50,11 +50,20 @@ var update = {
     }
 };
 
+var bcinfoUpdate = {
+    type: "get",
+    url: "/bcinfoUpdate",
+    success: function (data) {
+
+    }
+}
+
 
 // 时间
 getNowFormatDate();
 // 数据实时更新 + 滚动
-setInterval(function(){$.ajax(update)},3000);
+setInterval(function(){$.ajax(invoiceUpdate)},3000);
+
 // 随机生成发票数据
 $("#randomInvoice").click(function (){
     $.ajax({
@@ -140,12 +149,14 @@ $("#btn-invoiceInsert").click(function () {
             alert("插入失败！");
         },
         success: function (liItem) {
-            //alert(liItem);
-            if (liItem) {
+            if (liItem === "哈希值重复！") {
+                alert(liItem);
+            } else if (liItem === "系统错误！") {
+
+            } else if (liItem) {
                 $(".maquee").find("ul").append(liItem);
             }
             $("#myModal-invoiceInsert").modal('hide');
-
         }
     })
 })

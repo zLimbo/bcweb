@@ -39,9 +39,11 @@
             <div class="com-screen-content">
                 <div class="topRec_List">
                     <dl>
-                        <dd>日期时间</dd>
+                        <dd>日期</dd>
                         <dd>购买方</dd>
                         <dd>销售方</dd>
+                        <dd>发票类型</dd>
+                        <dd>税点</dd>
                         <dd>价费</dd>
                         <dd>税费</dd>
                         <dd>价税合计</dd>
@@ -52,6 +54,8 @@
                                 <div th:text="${invoice.invoiceDate}"></div>
                                 <div th:text="${invoice.buyerName}"></div>
                                 <div th:text="${invoice.sellerName}"></div>
+                                <div th:text="${invoice.invoiceType}"></div>
+                                <div th:text="${invoice.taxesPoint}"></div>
                                 <div th:text="${invoice.price}"></div>
                                 <div th:text="${invoice.taxes}"></div>
                                 <div th:text="${invoice.pricePlusTaxes}"></div>
@@ -70,16 +74,16 @@
             <div class="com-screen-content">
                 <div id="info" style="width:100%;height:100%;">
 
-                    <form>
+                    <form id="form-bcinfo">
                         <div class="form-group row">
-                            <label for="peerCount" class="col-md-4 col-form-label">当前连接节点数:</label>
-                            <div class="col-md-4">
+                            <label for="peerCount" class="col-sm-6 col-form-label">当前连接节点数:</label>
+                            <div class="col-sm-3">
                                 <p th:text="${peerCount}"></p>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="blockNumber" class="col-md-4 col-form-label">区块链块高度:</label>
-                            <div class="col-md-4">
+                            <label for="blockNumber" class="col-sm-6 col-form-label">区块链块高度:</label>
+                            <div class="col-sm-3">
                                 <p th:text="${blockNumber}"></p>
                             </div>
                         </div>

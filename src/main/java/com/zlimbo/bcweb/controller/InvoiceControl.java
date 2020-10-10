@@ -40,8 +40,6 @@ public class InvoiceControl {
     static final String PASS = "123456";
 
 
-
-
     private long offset = 6;
 
     @RequestMapping("")
@@ -205,7 +203,7 @@ public class InvoiceControl {
     }
 
 
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
     @ResponseBody
     public String invoiceUpdate() {
 
@@ -276,19 +274,22 @@ public class InvoiceControl {
 
         if (invoices.isEmpty()) return "";
         offset += 1;
-        Invoice invoice = invoices.get(0);
-        String liItem = "<li>\n<div>" +
-                invoice.getInvoiceDate() + "</div>\n<div>" +
-                invoice.getBuyerName() + "</div>\n<div>" +
-                invoice.getSellerName() + "</div>\n<div>" +
-                invoice.getPrice() + "</div>\n<div>" +
-                invoice.getTaxes() + "</div>\n<div>" +
-                invoice.getPricePlusTaxes() + "</div>\n</li>";
-
-        return liItem;
+        return getInvoiceItem(invoices.get(0));
     }
 
 
+    @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
+    @ResponseBody
+    public String bcinfoUpdate() throws IOException {
+        System.out.println("--------------------------------------------bcinfoUpdate ok");
+        CITAj citAj = CITAj.build(new HttpService("https://testnet.citahub.com"));
+        NetPeerCount netPeerCount = citAj.netPeerCount().send();
+        BigInteger peerCount = netPeerCount.getQuantity();
+        AppBlockNumber appBlockNumber = citAj.appBlockNumber().send();
+        BigInteger blockNumber = appBlockNumber.getBlockNumber();
+        
+        return "";
+    }
 
     @RequestMapping(value = "/randomInvoice", method = RequestMethod.GET)
     @ResponseBody
@@ -339,11 +340,15 @@ public class InvoiceControl {
             System.out.println("sql: " + sql);
             stmt.execute(sql);
         } catch (SQLException se) {
+            System.out.println("-----------------SQLException");
             //Handle errors for JDBC
             se.printStackTrace();
+            return "哈希值重复！";
         } catch (Exception e) {
+            System.out.println("-----------------Exception");
             //Handle errors for Class.forName
             e.printStackTrace();
+            return "系统错误！";
         } finally {
             //finally block used to close resources
             try {
@@ -357,19 +362,25 @@ public class InvoiceControl {
             } catch (SQLException se) {
                 se.printStackTrace();
             }//end finally try
+
         }//end try
         if (offset == 6) {
-            String liItem = "<li>\n<div>" +
-                    invoice.getInvoiceDate() + "</div>\n<div>" +
-                    invoice.getBuyerName() + "</div>\n<div>" +
-                    invoice.getSellerName() + "</div>\n<div>" +
-                    invoice.getPrice() + "</div>\n<div>" +
-                    invoice.getTaxes() + "</div>\n<div>" +
-                    invoice.getPricePlusTaxes() + "</div>\n</li>";
-
-            return liItem;
+            return getInvoiceItem(invoice);
         }
         return "";
+    }
+
+
+    String getInvoiceItem(Invoice invoice) {
+        return "<li>\n<div>" +
+                invoice.getInvoiceDate() + "</div>\n<div>" +
+                invoice.getBuyerName() + "</div>\n<div>" +
+                invoice.getSellerName() + "</div>\n<div>" +
+                invoice.getInvoiceType() + "</div>\n<div>" +
+                invoice.getTaxesPoint() + "</div>\n<div>" +
+                invoice.getPrice() + "</div>\n<div>" +
+                invoice.getTaxes() + "</div>\n<div>" +
+                invoice.getPricePlusTaxes() + "</div>\n</li>";
     }
 
 //    @ResponseBody
