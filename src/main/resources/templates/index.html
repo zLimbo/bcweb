@@ -7,154 +7,174 @@
     <title>华东师大-欧冶联盟链</title>
     <meta name="keywords" content="华东师大-欧冶区块链平台"/>
     <meta name="description" content="华东师大-欧冶区块链平台"/>
-    <script src="js/echarts.min.js"></script>
     <link rel="stylesheet" href="icon/iconfont.css">
     <link href='css/test-1280.css' rel='stylesheet' type='text/css'>
     <script src="js/jquery.min.js"></script>
-
-
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
 <body ms-controller="viewmodel">
-<div class="container-header">
-    <ul class="nowTime">
-        <li></li>
-        <li></li>
-    </ul>
-    <div class="location">
-        <i class="icon iconfont icon-buoumaotubiao23"></i>
-        <span class="areaName"></span>
+    <div class="container-header">
+        <ul class="nowTime">
+            <li></li>
+            <li></li>
+        </ul>
+        <div class="location">
+            <i class="icon iconfont icon-buoumaotubiao23"></i>
+            <span class="areaName"></span>
+        </div>
+        <h3>华东师大-欧冶区块链平台</h3>
     </div>
-    <h3>华东师大-欧冶区块链平台</h3>
-</div>
 
-<div class="container-content">
-    <div class="window-left">
-        <div class="com-count-title">发票数据上链</div>
-        <div class="com-screen-content">
-            <div class="topRec_List">
-                <dl>
-                    <dd>日期</dd>
-                    <dd>购买方</dd>
-                    <dd>销售方</dd>
-                    <dd>发票类型</dd>
-                    <dd>税点</dd>
-                    <dd>价费</dd>
-                    <dd>税费</dd>
-                    <dd>价税合计</dd>
-                </dl>
-                <div class="maquee">
-                    <ul>
-                        <li th:each="invoice: ${invoices}">
-                            <div th:text="${invoice.invoiceDate}"></div>
-                            <div th:text="${invoice.buyerName}"></div>
-                            <div th:text="${invoice.sellerName}"></div>
-                            <div th:text="${invoice.invoiceType}"></div>
-                            <div th:text="${invoice.taxesPoint}"></div>
-                            <div th:text="${invoice.price}"></div>
-                            <div th:text="${invoice.taxes}"></div>
-                            <div th:text="${invoice.pricePlusTaxes}"></div>
-                        </li>
-                    </ul>
+    <div class="container-content">
+        <div class="window-left">
+            <div class="com-count-title">
+                发票数据上链
+
+                <!-- 查询发票 按钮触发模态框 -->
+                <button style="position:absolute; right:120px" class="btn btn-primary btn-sm"
+                        data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票</button>
+                <!-- 插入发票 按钮触发模态框 -->
+                <button style="position:absolute; right:20px" id="btn-insertModal" class="btn btn-primary btn-sm mybutton"
+                        data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票</button>
+
+            </div>
+            <div class="com-screen-content">
+                <div class="topRec_List">
+                    <dl>
+                        <dd>日期</dd>
+                        <dd>购买方</dd>
+                        <dd>销售方</dd>
+                        <dd>发票类型</dd>
+                        <dd>税点</dd>
+                        <dd>价费</dd>
+                        <dd>税费</dd>
+                        <dd>价税合计</dd>
+                    </dl>
+                    <div class="maquee">
+                        <ul>
+                            <li th:each="invoice: ${invoices}">
+                                <div th:text="${invoice.invoiceDate}"></div>
+                                <div th:text="${invoice.buyerName}"></div>
+                                <div th:text="${invoice.sellerName}"></div>
+                                <div th:text="${invoice.invoiceType}"></div>
+                                <div th:text="${invoice.taxesPoint}"></div>
+                                <div th:text="${invoice.price}"></div>
+                                <div th:text="${invoice.taxes}"></div>
+                                <div th:text="${invoice.pricePlusTaxes}"></div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
         </div>
-        <span class="left-top"></span>
-        <span class="right-top"></span>
-        <span class="left-bottom"></span>
-        <span class="right-bottom"></span>
-    </div>
-    <div class="window-right">
-        <div class="com-count-title">区块链信息</div>
-        <div class="block-chain-info">
-            <div id="info" style="width:100%;height:100%;">
+        <div class="window-right">
+            <div class="com-count-title">区块链信息</div>
+            <div class="block-chain-info">
+                <div id="info" style="width:100%;height:100%;">
 
-                <form id="form-bcinfo">
-                    <div class="form-group row">
-                        <label for="chainId" class="col-sm-6 col-form-label">区块链ID:</label>
-                        <div class="col-sm-3">
-                            <p id="chainId" th:text="${chainId}"></p>
+                    <form id="form-bcinfo">
+                        <div class="form-group row">
+                            <label for="chainId" class="col-sm-6 col-form-label">区块链ID:</label>
+                            <div class="col-sm-3">
+                                <p id="chainId" th:text="${chainId}"></p>
+                            </div>
+
+                            <label for="chainName" class="col-sm-6 col-form-label">区块链名称:</label>
+                            <div class="col-sm-3">
+                                <p id="chainName" th:text="${chainName}"></p>
+                            </div>
+
+                            <label for="genesisTS" class="col-sm-6 col-form-label">区块链创建时间戳:</label>
+                            <div class="col-sm-3">
+                                <p id="genesisTS" th:text="${genesisTS}"></p>
+                            </div>
+
+                            <label for="peerCount" class="col-sm-6 col-form-label">当前连接节点数:</label>
+                            <div class="col-sm-3">
+                                <p id="peerCount" th:text="${peerCount}"></p>
+                            </div>
+
+                            <label for="blockNumber" class="col-sm-6 col-form-label">块高度:</label>
+                            <div class="col-sm-3">
+                                <p id="blockNumber" th:text="${blockNumber}"></p>
+                            </div>
                         </div>
 
-                        <label for="chainName" class="col-sm-6 col-form-label">区块链名称:</label>
-                        <div class="col-sm-3">
-                            <p id="chainName" th:text="${chainName}"></p>
-                        </div>
-
-                        <label for="genesisTS" class="col-sm-6 col-form-label">区块链创建时间戳:</label>
-                        <div class="col-sm-3">
-                            <p id="genesisTS" th:text="${genesisTS}"></p>
-                        </div>
-
-                        <label for="peerCount" class="col-sm-6 col-form-label">当前连接节点数:</label>
-                        <div class="col-sm-3">
-                            <p id="peerCount" th:text="${peerCount}"></p>
-                        </div>
-
-                        <label for="blockNumber" class="col-sm-6 col-form-label">块高度:</label>
-                        <div class="col-sm-3">
-                            <p id="blockNumber" th:text="${blockNumber}"></p>
-                        </div>
-                    </div>
-
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <div class="com-count-title">最新块信息</div>
-        <div class="block-chain-info">
-            <div id="info" style="width:100%;height:100%;">
+            <div class="com-count-title">最新块信息</div>
+            <div class="block-chain-info">
+                <div id="info" style="width:100%;height:100%;">
 
-                <form id="form-bcinfo">
-                    <div class="form-group row">
-                        <label for="blockId" class="col-sm-6 col-form-label">ID:</label>
-                        <div class="col-sm-3">
-                            <p id="blockId" th:text="${blockId}"></p>
+                    <form id="form-bcinfo">
+                        <div class="form-group row">
+                            <label for="blockId" class="col-sm-6 col-form-label">ID:</label>
+                            <div class="col-sm-3">
+                                <p id="blockId" th:text="${blockId}"></p>
+                            </div>
+
+                            <label for="blockJsonrpc" class="col-sm-6 col-form-label">jsonrpc版本:</label>
+                            <div class="col-sm-3">
+                                <p id="blockJsonrpc" th:text="${blockJsonrpc}"></p>
+                            </div>
+
+                            <label for="blockVersion" class="col-sm-6 col-form-label">块版本:</label>
+                            <div class="col-sm-3">
+                                <p id="blockVersion" th:text="${blockVersion}"></p>
+                            </div>
+
+                            <label for="headerTimestamp" class="col-sm-6 col-form-label">时间戳:</label>
+                            <div class="col-sm-3">
+                                <p id="headerTimestamp" th:text="${headerTimestamp}"></p>
+                            </div>
                         </div>
 
-                        <label for="blockJsonrpc" class="col-sm-6 col-form-label">jsonrpc版本:</label>
-                        <div class="col-sm-3">
-                            <p id="blockJsonrpc" th:text="${blockJsonrpc}"></p>
-                        </div>
-
-                        <label for="blockVersion" class="col-sm-6 col-form-label">块版本:</label>
-                        <div class="col-sm-3">
-                            <p id="blockVersion" th:text="${blockVersion}"></p>
-                        </div>
-
-                        <label for="headerTimestamp" class="col-sm-6 col-form-label">时间戳:</label>
-                        <div class="col-sm-3">
-                            <p id="headerTimestamp" th:text="${headerTimestamp}"></p>
-                        </div>
-                    </div>
-
-                </form>
+                    </form>
+                </div>
             </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
         </div>
-        <span class="left-top"></span>
-        <span class="right-top"></span>
-        <span class="left-bottom"></span>
-        <span class="right-bottom"></span>
     </div>
-</div>
+    
 
-<div style="margin:20px; padding:20px; box-sizing:border-box">
-    <div style="margin:20px; padding:20px; width:60% float:left">
+<!--<div class="bottom">-->
+<!--&lt;!&ndash;    <div class="count-base" >&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="com-count-title">资源总量构成</div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="com-screen-content">&ndash;&gt;-->
 
-    </div>
-    <div style="width:20%">
-        <!-- 查询发票 按钮触发模态框 -->
-        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票</button>
+<!--&lt;!&ndash;            <div id="main1" style="width:100%;height:300px;"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <span class="left-top"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;        <span class="right-top"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;        <span class="left-bottom"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;        <span class="right-bottom"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--</div>-->
 
-        <!-- 插入发票 按钮触发模态框 -->
-        <button id="btn-insertModal" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票</button>
-    </div>
-</div>
 
+<!--    <div style="margin:20px; padding:20px; width:60% float:left">-->
 
+<!--    </div>-->
+<!--    <div style="width:20%">-->
+<!--        &lt;!&ndash; 查询发票 按钮触发模态框 &ndash;&gt;-->
+<!--        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票</button>-->
+
+<!--        &lt;!&ndash; 插入发票 按钮触发模态框 &ndash;&gt;-->
+<!--        <button id="btn-insertModal" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票</button>-->
+<!--    </div>-->
 
 <!--    <form class="form-inline my-2 my-lg-0" role="search" method="get" action="/Search/SearchList" target="_blank">-->
 <!--        <div class="input-group">-->
@@ -167,7 +187,7 @@
 
 <!-- 插入发票 模态框（Modal） -->
 <div class="modal fade" id="myModal-invoiceInsert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog .modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -269,7 +289,6 @@
                     </div>
                     <button type="button" class="btn btn-default" id="randomInvoice">随机生成</button>
                     <button type="reset" class="btn btn-default" id="btn-test">重置</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" id="btn-invoiceInsert">提交</button>
                 </form>
 
@@ -286,9 +305,6 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">查询发票</h4>
-            </div>
-            <div class="modal-body" id="invoiceQueryShow">
-
             </div>
             <div class="modal-footer">
                 <form class="form-horizontal">
@@ -309,7 +325,7 @@
 </div>
 
 
-<!-- 模态框（Modal） -->
+<!-- 查询结果 模态框（Modal） -->
 <div class="modal fade" id="queryShowModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

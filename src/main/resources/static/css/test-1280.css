@@ -10,6 +10,7 @@ body{
     background-size:cover;
     font-size:9px;
     color:#76dbd1;
+    height:100%;
 }
 div{
     box-sizing: border-box;
@@ -27,7 +28,7 @@ div{
 .container-header .nowTime{
     position: absolute;
     left:20px;
-    top:41px;
+    top:50px;
     font-size: 0;
 }
 .container-header .nowTime li{
@@ -125,6 +126,7 @@ div{
     height:auto;
 }
 
+
 .block-chain-info {
     color:#1bb4f9;
     padding:10px;
@@ -136,7 +138,7 @@ div{
 .container-content{
     padding:10px 20px;
 	box-sizing: border-box;
-    height:380px;
+    height:580px;
 }
 
 .window-left, .window-right{
@@ -171,7 +173,21 @@ div{
     background-size:cover;
 }
 
+/*.count-base,.count-resource,.count-share,.count-topic{*/
+/*    position:relative;*/
+/*    padding:20px;*/
+/*    margin-top: 10px;*/
+/*    box-sizing: border-box;*/
+/*}*/
 
+/*.count-base{*/
+/*    margin-left:10px;*/
+/*    float:left;!*浮动*!*/
+/*    width:32%;*/
+/*    height:200px;*/
+/*    background: url('../images/left-top3.jpg') center no-repeat;*/
+/*    background-size:cover;*/
+/*}*/
 
 
 
@@ -211,3 +227,11 @@ a{text-decoration:none;}
 .topRec_List li div:nth-child(6){ width:12%;}
 .topRec_List li div:nth-child(7){ width:12%;}
 .topRec_List li div:nth-child(8){ width:12%;}
+
+.mybutton {
+    margin-left: 20px;
+    background: transparent;
+    color: #168fcd;
+    border: 2px solid black;
+}
+

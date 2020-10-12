@@ -110,6 +110,23 @@ $("#randomInvoice").click(function (){
 
 // 查询数据
 $("#btn-invoiceQuery").click(function (){
+    $("#query-hashValue").val("");
+    $("#query-invoiceNo").val("");
+    $("#query-buyerName").val("");
+    $("#query-buyerTaxesNo").val("");
+    $("#query-sellerName").val("");
+    $("#query-sellerTaxesNo").val("");
+    $("#query-invoiceDate").val("");
+    $("#query-invoiceType").val("");
+    $("#query-taxesPoint").val("");
+    $("#query-taxes").val("");
+    $("#query-price").val("");
+    $("#query-pricePlusTaxes").val("");
+    $("#query-invoiceNumber").val("");
+    $("#query-statementSheet").val("");
+    $("#query-statementWeight").val("");
+    $("#query-timestamp").val("");
+    $("#query-contractAddress").val("");
 // $(document).on("click", "#btn-invoiceQuery", function () {
     //var jsonString = JSON.stringify(json);
     //var data = $('#invoiceForm').serialize()
@@ -122,7 +139,7 @@ $("#btn-invoiceQuery").click(function (){
         dataType: 'json',
         data: data,
         error: function (request) {
-            alert("提交失败！");
+            //alert("提交错误");
         },
         success: function (jsonObj) {
             //var jsonObj = eval("(" + data + ")");
@@ -145,6 +162,27 @@ $("#btn-invoiceQuery").click(function (){
             $("#query-contractAddress").val(jsonObj.contractAddress);
         }
     })
+})
+
+
+$("#btn-insertModal").click(function () {
+    $("#hashValue").val("");
+    $("#invoiceNo").val("");
+    $("#buyerName").val("");
+    $("#buyerTaxesNo").val("");
+    $("#sellerName").val("");
+    $("#sellerTaxesNo").val("");
+    $("#invoiceDate").val("");
+    $("#invoiceType").val("");
+    $("#taxesPoint").val("");
+    $("#taxes").val("");
+    $("#price").val("");
+    $("#pricePlusTaxes").val("");
+    $("#invoiceNumber").val("");
+    $("#statementSheet").val("");
+    $("#statementWeight").val("");
+    $("#timestamp").val("");
+    $("#contractAddress").val("");
 })
 
 
