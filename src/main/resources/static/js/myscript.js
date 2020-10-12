@@ -53,8 +53,20 @@ var invoiceUpdate = {
 var bcinfoUpdate = {
     type: "get",
     url: "/bcinfoUpdate",
-    success: function (data) {
+    dataType: "json",
+    success: function (jsonObj) {
+        $("#chainId").html(jsonObj.chainId);
+        $("#chainName").html(jsonObj.chainName);
+        $("#genesisTS").html(jsonObj.genesisTS);
+        $("#peerCount").html(jsonObj.peerCount);
+        $("#blockNumber").html(jsonObj.blockNumber);
 
+        $("#blockId").html(jsonObj.blockId);
+        $("#blockJsonrpc").html(jsonObj.blockJsonrpc);
+        $("#blockVersion").html(jsonObj.blockVersion);
+        $("#headerTimestamp").html(jsonObj.headerTimestamp);
+        //alert(data["peerCount"]);
+        //var jsonObj = eval("(" + data + ")");
     }
 }
 
@@ -63,31 +75,34 @@ var bcinfoUpdate = {
 getNowFormatDate();
 // 数据实时更新 + 滚动
 setInterval(function(){$.ajax(invoiceUpdate)},3000);
+// 实施更新链信息
+setInterval(function(){$.ajax(bcinfoUpdate)},3000);
 
 // 随机生成发票数据
 $("#randomInvoice").click(function (){
     $.ajax({
         type: "GET",
         url: "/randomInvoice",
-        success: function (data) {
-            var jsonobj = eval("(" + data + ")");
-            $("#hashValue").val(jsonobj.hashValue);
-            $("#invoiceNo").val(jsonobj.invoiceNo);
-            $("#buyerName").val(jsonobj.buyerName);
-            $("#buyerTaxesNo").val(jsonobj.buyerTaxesNo);
-            $("#sellerName").val(jsonobj.sellerName);
-            $("#sellerTaxesNo").val(jsonobj.sellerTaxesNo);
-            $("#invoiceDate").val(jsonobj.invoiceDate);
-            $("#invoiceType").val(jsonobj.invoiceType);
-            $("#taxesPoint").val(jsonobj.taxesPoint);
-            $("#taxes").val(jsonobj.taxes);
-            $("#price").val(jsonobj.price);
-            $("#pricePlusTaxes").val(jsonobj.pricePlusTaxes);
-            $("#invoiceNumber").val(jsonobj.invoiceNumber);
-            $("#statementSheet").val(jsonobj.statementSheet);
-            $("#statementWeight").val(jsonobj.statementWeight);
-            $("#timestamp").val(jsonobj.timestamp);
-            $("#contractAddress").val(jsonobj.contractAddress);
+        dataType: "json",
+        success: function (jsonObj) {
+            //var jsonObj = eval("(" + data + ")");
+            $("#hashValue").val(jsonObj.hashValue);
+            $("#invoiceNo").val(jsonObj.invoiceNo);
+            $("#buyerName").val(jsonObj.buyerName);
+            $("#buyerTaxesNo").val(jsonObj.buyerTaxesNo);
+            $("#sellerName").val(jsonObj.sellerName);
+            $("#sellerTaxesNo").val(jsonObj.sellerTaxesNo);
+            $("#invoiceDate").val(jsonObj.invoiceDate);
+            $("#invoiceType").val(jsonObj.invoiceType);
+            $("#taxesPoint").val(jsonObj.taxesPoint);
+            $("#taxes").val(jsonObj.taxes);
+            $("#price").val(jsonObj.price);
+            $("#pricePlusTaxes").val(jsonObj.pricePlusTaxes);
+            $("#invoiceNumber").val(jsonObj.invoiceNumber);
+            $("#statementSheet").val(jsonObj.statementSheet);
+            $("#statementWeight").val(jsonObj.statementWeight);
+            $("#timestamp").val(jsonObj.timestamp);
+            $("#contractAddress").val(jsonObj.contractAddress);
         }
     })
 })
@@ -104,30 +119,30 @@ $("#btn-invoiceQuery").click(function (){
     $.ajax({
         type: 'GET',
         url: '/invoiceQuery',
-        dataType: 'text',
+        dataType: 'json',
         data: data,
         error: function (request) {
             alert("提交失败！");
         },
-        success: function (data) {
-            var jsonobj = eval("(" + data + ")");
-            $("#query-hashValue").val(jsonobj.hashValue);
-            $("#query-invoiceNo").val(jsonobj.invoiceNo);
-            $("#query-buyerName").val(jsonobj.buyerName);
-            $("#query-buyerTaxesNo").val(jsonobj.buyerTaxesNo);
-            $("#query-sellerName").val(jsonobj.sellerName);
-            $("#query-sellerTaxesNo").val(jsonobj.sellerTaxesNo);
-            $("#query-invoiceDate").val(jsonobj.invoiceDate);
-            $("#query-invoiceType").val(jsonobj.invoiceType);
-            $("#query-taxesPoint").val(jsonobj.taxesPoint);
-            $("#query-taxes").val(jsonobj.taxes);
-            $("#query-price").val(jsonobj.price);
-            $("#query-pricePlusTaxes").val(jsonobj.pricePlusTaxes);
-            $("#query-invoiceNumber").val(jsonobj.invoiceNumber);
-            $("#query-statementSheet").val(jsonobj.statementSheet);
-            $("#query-statementWeight").val(jsonobj.statementWeight);
-            $("#query-timestamp").val(jsonobj.timestamp);
-            $("#query-contractAddress").val(jsonobj.contractAddress);
+        success: function (jsonObj) {
+            //var jsonObj = eval("(" + data + ")");
+            $("#query-hashValue").val(jsonObj.hashValue);
+            $("#query-invoiceNo").val(jsonObj.invoiceNo);
+            $("#query-buyerName").val(jsonObj.buyerName);
+            $("#query-buyerTaxesNo").val(jsonObj.buyerTaxesNo);
+            $("#query-sellerName").val(jsonObj.sellerName);
+            $("#query-sellerTaxesNo").val(jsonObj.sellerTaxesNo);
+            $("#query-invoiceDate").val(jsonObj.invoiceDate);
+            $("#query-invoiceType").val(jsonObj.invoiceType);
+            $("#query-taxesPoint").val(jsonObj.taxesPoint);
+            $("#query-taxes").val(jsonObj.taxes);
+            $("#query-price").val(jsonObj.price);
+            $("#query-pricePlusTaxes").val(jsonObj.pricePlusTaxes);
+            $("#query-invoiceNumber").val(jsonObj.invoiceNumber);
+            $("#query-statementSheet").val(jsonObj.statementSheet);
+            $("#query-statementWeight").val(jsonObj.statementWeight);
+            $("#query-timestamp").val(jsonObj.timestamp);
+            $("#query-contractAddress").val(jsonObj.contractAddress);
         }
     })
 })
@@ -177,7 +192,7 @@ $("#btn-invoiceInsert").click(function () {
 //             alert("提交失败！");
 //         },
 //         success: function (data) {
-//             var jsonobj = eval("(" + data + ")");
+//             var jsonObj = eval("(" + data + ")");
 //             alert(data);
 //         }
 //     })

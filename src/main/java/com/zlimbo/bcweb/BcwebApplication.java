@@ -29,8 +29,8 @@ public class BcwebApplication {
         SpringApplication.run(BcwebApplication.class, args);
 
         //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
-        //CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        //testCitaService(service);
+//        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
+//        testCitaService(service);
         //testProtobuf();
     }
 
@@ -113,9 +113,9 @@ public class BcwebApplication {
             System.out.print("rawResponse: ");
             System.out.println(appBlock.getRawResponse());
 
-            if (appBlock.isEmpty()) {
-                System.out.println("This no block!");
-            } else {
+//            if (appBlock.isEmpty()) {
+//                System.out.println("This no block!");
+//            } else {
                 AppBlock.Block block = appBlock.getBlock();
                 System.out.println("--------Block");
                 System.out.print("version: ");
@@ -188,7 +188,7 @@ public class BcwebApplication {
                     System.out.println("to_v1: " + byteToString(txContent.getToV1()));
                     System.out.println("chain_id_v1: " + byteToString(txContent.getChainIdV1()));
                     System.out.println();
-                }
+//                }
             }
         }
     }

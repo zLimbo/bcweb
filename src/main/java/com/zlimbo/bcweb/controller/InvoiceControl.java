@@ -2,9 +2,10 @@ package com.zlimbo.bcweb.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.citahub.cita.protobuf.Blockchain;
 import com.citahub.cita.protocol.CITAj;
-import com.citahub.cita.protocol.core.methods.response.AppBlockNumber;
-import com.citahub.cita.protocol.core.methods.response.NetPeerCount;
+import com.citahub.cita.protocol.core.DefaultBlockParameter;
+import com.citahub.cita.protocol.core.methods.response.*;
 import com.citahub.cita.protocol.http.HttpService;
 import com.zlimbo.bcweb.domain.Invoice;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping("")
@@ -29,7 +27,7 @@ public class InvoiceControl {
 //    private JdbcTemplate jdbcTemplate;
 
     static final String DB_URL =
-            "jdbc:mysql://localhost:3306/bcweb" +
+            "jdbc:mysql://localhost:3306/ouyeel" +
             "?useSSL=false" +
             "&useUnicode=true" +
             "&characterEncoding=UTF8" +
@@ -111,20 +109,19 @@ public class InvoiceControl {
         //if (offset == 6 && invoices.size() < offset) offset = invoices.size();
         System.out.println("offset: " + offset);
 
-        CITAj citAj = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        NetPeerCount netPeerCount = citAj.netPeerCount().send();
-        BigInteger peerCount = netPeerCount.getQuantity();
-        AppBlockNumber appBlockNumber = citAj.appBlockNumber().send();
-        BigInteger blockNumber = appBlockNumber.getBlockNumber();
+
+
 
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("invoices", invoices);
         modelAndView.addObject("invoice", new Invoice());
-        modelAndView.addObject("peerCount", peerCount);
-        modelAndView.addObject("blockNumber", blockNumber);
+        Map<String, String> hashMap = getBcinfo();
+        modelAndView.addAllObjects(hashMap);
 
         return modelAndView;
     }
+
+
 
 
     @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
@@ -278,17 +275,16 @@ public class InvoiceControl {
     }
 
 
-    @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
+    @RequestMapping(value = "/bcinfoUpdate", method = RequestMethod.GET)
     @ResponseBody
     public String bcinfoUpdate() throws IOException {
         System.out.println("--------------------------------------------bcinfoUpdate ok");
-        CITAj citAj = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        NetPeerCount netPeerCount = citAj.netPeerCount().send();
-        BigInteger peerCount = netPeerCount.getQuantity();
-        AppBlockNumber appBlockNumber = citAj.appBlockNumber().send();
-        BigInteger blockNumber = appBlockNumber.getBlockNumber();
-        
-        return "";
+
+        Map<String, String> hashMap = getBcinfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putAll(hashMap);
+
+        return jsonObject.toJSONString();
     }
 
     @RequestMapping(value = "/randomInvoice", method = RequestMethod.GET)
@@ -368,6 +364,134 @@ public class InvoiceControl {
             return getInvoiceItem(invoice);
         }
         return "";
+    }
+
+
+    Map<String, String> getBcinfo() throws IOException {
+        Map<String, String> hashMap = new HashMap<>();
+
+        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
+
+        NetPeerCount netPeerCount = service.netPeerCount().send();
+        BigInteger peerCount = netPeerCount.getQuantity();
+        hashMap.put("peerCount", peerCount.toString());
+
+        AppBlockNumber appBlockNumber = service.appBlockNumber().send();
+        BigInteger blockNumber = appBlockNumber.getBlockNumber();
+        hashMap.put("blockNumber", blockNumber.toString());
+
+
+        DefaultBlockParameter defaultParam = DefaultBlockParameter.valueOf("latest");
+        AppMetaData appMetaData = service.appMetaData(defaultParam).send();
+        AppMetaData.AppMetaDataResult result = appMetaData.getAppMetaDataResult();
+        BigInteger chainId = result.getChainId();
+        String chainName = result.getChainName();
+        String genesisTS = result.getGenesisTimestamp();
+        hashMap.put("chainId", chainId.toString());
+        hashMap.put("chainName", chainName);
+        hashMap.put("genesisTS", genesisTS);
+        
+
+        AppBlock appBlock = service.appGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send();
+        hashMap.put("blockId", String.valueOf(appBlock.getId()));
+        hashMap.put("blockJsonrpc", appBlock.getJsonrpc());
+
+        AppBlock.Block block = appBlock.getBlock();
+        hashMap.put("blockVersion", block.getVersion());
+        hashMap.put("blockHash", block.getHash());
+
+        AppBlock.Header header = block.getHeader();
+        hashMap.put("headerTimestamp", header.getTimestamp().toString());
+        hashMap.put("headerPrevHash", header.getPrevHash());
+        hashMap.put("headerNumber", header.getNumber());
+        hashMap.put("headerStateRoot", header.getStateRoot());
+        hashMap.put("headerTransactionsRoot", header.getTransactionsRoot());
+        hashMap.put("headerReceiptsRoot", header.getReceiptsRoot());
+        hashMap.put("headerProposer", header.getProposer());
+
+        AppBlock.Body body = block.getBody();
+        List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
+        hashMap.put("blockTxNumber", String.valueOf(transactionObjects.size()));
+
+//        if (appBlock.isEmpty()) {
+//            System.out.println("This no block!");
+//        } else {
+//            AppBlock.Block block = appBlock.getBlock();
+//            System.out.println("--------Block");
+//            System.out.print("version: ");
+//            System.out.println(block.getVersion());
+//            System.out.print("hash: ");
+//            System.out.println(block.getHash());
+//
+//            AppBlock.Header header = block.getHeader();
+//            System.out.println("------------header");
+//            System.out.print("timestamp: ");
+//            System.out.println(header.getTimestamp());
+//            System.out.print("prevHash ");
+//            System.out.println(header.getPrevHash());
+//            System.out.print("number: ");
+//            System.out.println(header.getNumber());
+//            System.out.print("stateRoot ");
+//            System.out.println(header.getStateRoot());
+//            System.out.print("transactionsRoot: ");
+//            System.out.println(header.getTransactionsRoot());
+//            System.out.print("receiptsRoot: ");
+//            System.out.println(header.getReceiptsRoot());
+//            System.out.print("quotaUsed: ");
+//            System.out.println(header.getQuotaUsed());
+//            System.out.print("proposer: ");
+//            System.out.println(header.getProposer());
+//
+//            AppBlock.Body body = block.getBody();
+//            List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
+//            System.out.println("------------body(txs): ");
+//            System.out.println("This is " + transactionObjects.size() + " transactions.");
+//
+//            for (AppBlock.TransactionObject transactionObject : transactionObjects) {
+//                Transaction transaction = transactionObject.get();
+//                System.out.print("hash: ");
+//                System.out.println(transaction.getHash());
+//                System.out.print("blockHash: ");
+//                System.out.println(transaction.getBlockHash());
+////                    System.out.print("blockNumber: ");
+////                    System.out.println(transaction.getBlockNumber());
+//                System.out.print("content: ");
+//                System.out.println(transaction.getContent());
+//                System.out.print("index: ");
+//                System.out.println(transaction.getIndex());
+//                System.out.print("from: ");
+//                System.out.println(transaction.getFrom());
+//                System.out.println();
+//
+//
+//                // byte[] data = transaction.getContent().getBytes();
+//                String content = transaction.getContent().substring(2);
+//                System.out.println("content: " + content);
+//                BigInteger bigInteger = new BigInteger(content, 16);
+//                System.out.println("bigInteger: " + bigInteger);
+//                byte[] data = bigInteger.toByteArray();
+//                Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
+//                Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
+//
+//                System.out.println("----------------UnverifiedTransaction: ");
+//                System.out.println("crypto: " + unverifiedTransaction.getCryptoValue());
+//                System.out.println("signature: " + byteToString(unverifiedTransaction.getSignature()));
+//                System.out.println("--------------------txContent: ");
+//                System.out.println("to: " + txContent.getTo());
+//                System.out.println("nonce: " + txContent.getNonce());
+//                System.out.println("quota: " + txContent.getQuota());
+//                System.out.println("valid_until_block: " + txContent.getValidUntilBlock());
+//                System.out.println("data: " +  byteToString(txContent.getData()));
+//                System.out.println("value: " + byteToString(txContent.getValue()));
+//                System.out.println("chain_id: " + txContent.getChainId());
+//                System.out.println("version: " + txContent.getVersion());
+//                System.out.println("to_v1: " + byteToString(txContent.getToV1()));
+//                System.out.println("chain_id_v1: " + byteToString(txContent.getChainIdV1()));
+//                System.out.println();
+//            }
+//        }
+
+        return hashMap;
     }
 
 

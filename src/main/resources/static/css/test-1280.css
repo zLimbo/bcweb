@@ -124,16 +124,19 @@ div{
     width:100%;
     height:auto;
 }
-.com-screen-content2{
+
+.block-chain-info {
+    color:#1bb4f9;
+    padding:10px;
     width:100%;
     height:auto;
+    font-size: 12px
 }
-
 
 .container-content{
     padding:10px 20px;
 	box-sizing: border-box;
-    height:520px;
+    height:380px;
 }
 
 .window-left, .window-right{
@@ -153,7 +156,7 @@ div{
 .window-left {
 	margin-left:10px;
 	float:left;
-	width:72.4%;
+	width:62.4%;
     height:360px;
     background: url('../images/left-bottom2.jpg') center no-repeat;
 	background-size:cover;
@@ -162,7 +165,7 @@ div{
 .window-right{
     margin-left:10px;
     float:left;
-    width:24.4%;
+    width:34.4%;
     height:360px;
     background: url('../images/left-bottom2.jpg') center no-repeat;
     background-size:cover;
