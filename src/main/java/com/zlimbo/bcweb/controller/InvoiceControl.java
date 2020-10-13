@@ -38,11 +38,16 @@ public class InvoiceControl {
     //  Database credentials
     static final String USER = "root";
     static final String PASS = "123456";
+    static final int ITEM_SIZE = 6;
 
 
-    private long offset = 6;
+    private int offset = ITEM_SIZE;
+    private boolean isAdd = false;
+    private int txAllNumber = 0;
     Map<String, Integer> invoiceKindNumber;
-    Map<String, String> zh2en;
+    LinkedList<String> xAxisData;
+    LinkedList<String> priceData;
+    LinkedList<String> taxesData;
 
 
     public InvoiceControl() {
@@ -51,16 +56,28 @@ public class InvoiceControl {
         invoiceKindNumber.put("普通发票", 0);
         invoiceKindNumber.put("专业发票", 0);
 
-//        zh2en = new HashMap<>();
-//        zh2en.put("增值税发票", "vatInvoice");
-//        zh2en.put("普通发票", "plainInvoice");
-//        zh2en.put("专业发票", "proInvoice");
+        xAxisData = new LinkedList<>();
+        priceData = new LinkedList<>();
+        taxesData = new LinkedList<>();
+
     }
+
 
     private void updateGraphInfo(Invoice invoice) {
         String invoiceType =  invoice.getInvoiceType();
         invoiceKindNumber.put(invoiceType, 1 + invoiceKindNumber.get(invoiceType));
+        xAxisData.add(invoice.getInvoiceDate() + "\n买:" +
+                invoice.getBuyerName() + "\n卖:" +
+                invoice.getSellerName());
+        priceData.add(invoice.getPrice());
+        taxesData.add(invoice.getTaxes());
+        if (xAxisData.size() > ITEM_SIZE) {
+            xAxisData.pollFirst();
+            priceData.pollFirst();
+            taxesData.pollFirst();
+        }
     }
+
 
     @RequestMapping("")
     public ModelAndView invoiceShow() throws IOException {
@@ -81,7 +98,7 @@ public class InvoiceControl {
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM invoice ORDER BY timestamp LIMIT " + (offset - 6) + ", 6";
+            String sql = "SELECT * FROM invoice ORDER BY timestamp LIMIT " + (offset - ITEM_SIZE) + ", " + ITEM_SIZE;
             ResultSet resultSet = stmt.executeQuery(sql);
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
@@ -131,8 +148,11 @@ public class InvoiceControl {
         //if (offset == 6 && invoices.size() < offset) offset = invoices.size();
         System.out.println("offset: " + offset);
 
-        for (Invoice invoice: invoices) {
-            updateGraphInfo(invoice);
+        if (isAdd == false) {
+            for (Invoice invoice : invoices) {
+                updateGraphInfo(invoice);
+            }
+            isAdd = true;
         }
 
 
@@ -301,6 +321,43 @@ public class InvoiceControl {
     }
 
 
+    @RequestMapping(value = "/graphUpdate", method = RequestMethod.GET)
+    @ResponseBody
+    public String graphUpdate() throws IOException {
+        System.out.println("--------------------------------------------graphUpdate ok");
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray pieData = new JSONArray();
+
+        Set<String> keySet = invoiceKindNumber.keySet();
+        for (String key: keySet) {
+            JSONObject oneKV = new JSONObject();
+            oneKV.put("value", invoiceKindNumber.get(key));
+            oneKV.put("name", key);
+            pieData.add(oneKV);
+        }
+        jsonObject.put("pieData", pieData);
+
+        JSONArray xAxisJson = new JSONArray();
+        JSONArray priceJson = new JSONArray();
+        JSONArray taxesJson = new JSONArray();
+
+        for (int i = 0; i < xAxisJson.size(); ++i) {
+            xAxisJson.add(xAxisData.get(i));
+            priceJson.add(priceData.get(i));
+            taxesJson.add(taxesData.get(i));
+        }
+        jsonObject.put("xAxisData", xAxisData);
+        jsonObject.put("priceData", priceData);
+        jsonObject.put("taxesData", taxesData);
+
+        String jsonObj = jsonObject.toJSONString();
+        System.out.println(jsonObj);
+        //jsonObject.putAll(invoiceKindNumber);
+        return jsonObj;
+    }
+
+
 
 
     @RequestMapping("/invoiceInsert")
@@ -369,6 +426,7 @@ public class InvoiceControl {
 
         }//end try
         if (offset == 6) {
+            updateGraphInfo(invoice);
             return getInvoiceItem(invoice);
         }
         return "";
@@ -395,28 +453,6 @@ public class InvoiceControl {
         return jsonObject.toJSONString();
     }
 
-
-    @RequestMapping(value = "/graphUpdate", method = RequestMethod.GET)
-    @ResponseBody
-    public String graphUpdate() throws IOException {
-        System.out.println("--------------------------------------------graphUpdate ok");
-
-        JSONObject jsonObject = new JSONObject();
-        JSONArray pieData = new JSONArray();
-
-        Set<String> keySet = invoiceKindNumber.keySet();
-        for (String key: keySet) {
-            JSONObject oneKV = new JSONObject();
-            oneKV.put("value", invoiceKindNumber.get(key));
-            oneKV.put("name", key);
-            pieData.add(oneKV);
-        }
-        jsonObject.put("pieData", pieData);
-        String jsonObj = jsonObject.toJSONString();
-        System.out.println(jsonObj);
-        //jsonObject.putAll(invoiceKindNumber);
-        return jsonObj;
-    }
 
 
     Map<String, String> getBcinfo() throws IOException {
@@ -463,7 +499,10 @@ public class InvoiceControl {
 
         AppBlock.Body body = block.getBody();
         List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
-        hashMap.put("blockTxNumber", String.valueOf(transactionObjects.size()));
+        int blockTxNumber = transactionObjects.size();
+        hashMap.put("blockTxNumber", String.valueOf(blockTxNumber));
+        txAllNumber += blockTxNumber;
+        hashMap.put("txAllNumber", String.valueOf(txAllNumber));
 
 //        if (appBlock.isEmpty()) {
 //            System.out.println("This no block!");

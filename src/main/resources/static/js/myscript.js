@@ -34,21 +34,7 @@ function getNowFormatDate() {
 }
 
 
-var invoiceUpdate = {
-    type: "get",
-    url: "/invoiceUpdate",    //向后端请求数据的url
-    success: function (liItem) {
-        if (liItem) {
-            $(".maquee").find("ul").animate({
-                marginTop: "-37px"
-            }, 500, function () {
-                $(this).append(liItem);
-                $(this).find("li:first").remove();
-                $(this).css({marginTop: "0px"});
-            })
-        }
-    }
-};
+
 
 var bcinfoUpdate = {
     type: "get",
@@ -60,6 +46,7 @@ var bcinfoUpdate = {
         $("#genesisTS").html(jsonObj.genesisTS);
         $("#peerCount").html(jsonObj.peerCount);
         $("#blockNumber").html(jsonObj.blockNumber);
+        $("#txAllNumber").html(jsonObj.txAllNumber);
 
         $("#blockId").html(jsonObj.blockId);
         $("#blockJsonrpc").html(jsonObj.blockJsonrpc);
@@ -300,77 +287,22 @@ var labelOption = {
     }
 };
 
-// 指定图表的配置项和数据
-option = {
-    color: ['#4cabce', '#e5323e'],
-    tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'shadow'
+
+var invoiceUpdate = {
+    type: "get",
+    url: "/invoiceUpdate",    //向后端请求数据的url
+    success: function (liItem) {
+        if (liItem) {
+            $(".maquee").find("ul").animate({
+                marginTop: "-37px"
+            }, 500, function () {
+                $(this).append(liItem);
+                $(this).find("li:first").remove();
+                $(this).css({marginTop: "0px"});
+            })
         }
-    },
-    legend: {
-        data: ['价费', '税费'],
-        textStyle: {
-            color: '#76dbd1'
-        }
-    },
-    toolbox: {
-        show: true,
-        orient: 'vertical',
-        left: 'right',
-        top: 'center',
-        showTitle: false,
-        feature: {
-            mark: {show: true},
-            // dataView: {show: true, readOnly: false},
-            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-            // restore: {show: true},
-            // saveAsImage: {show: true}
-        }
-    },
-    xAxis: [
-        {
-            type: 'category',
-            axisLine: {
-                lineStyle: {
-                    color: '#76dbd1'
-                }
-            },
-            data: ['2012', '2013', '2014', '2015', '2016', '2017'],
-        }
-    ],
-    yAxis: [
-        {
-            type: 'value',
-            axisLine: {
-                lineStyle: {
-                    color: '#76dbd1'
-                }
-            }
-        }
-    ],
-    series: [
-        {
-            name: '价费',
-            type: 'bar',
-            barGap: 0,
-            label: labelOption,
-            data: [32000, 33200, 30100, 33400, 39000, 30000],
-        },
-        {
-            name: '税费',
-            type: 'bar',
-            label: labelOption,
-            data: [220, 182, 191, 234, 290, 300]
-        }
-    ]
+    }
 };
-
-// 使用刚指定的配置项和数据显示图表。
-myChart.setOption(option);
-
-
 
 // 基于准备好的dom，初始化echarts实例
 var myChart2 = echarts.init(document.getElementById('main2'), 'wonderland');
@@ -381,15 +313,13 @@ setInterval(function () {
         url: "/graphUpdate",
         dataType: "json",
         success: function (jsonObj) {
-            // myChart2.hideLoading();  // 隐藏 loading 效果
-            //alert(jsonObj);
             // 指定图表的配置项和数据
             var option = {
                 series : [
                     {
                         name: '访问来源',
                         type: 'pie',
-                        radius: '45%',
+                        radius: '40%',
                         center: ['40%', '40%'],
                         data:jsonObj.pieData,
                         roseType: 'angle',
@@ -417,8 +347,83 @@ setInterval(function () {
             myChart2.setOption(option);
 
 
+            // 指定图表的配置项和数据
+            option = {
+                color: ['#4cabce', '#e5323e'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['价费', '税费'],
+                    textStyle: {
+                        color: '#76dbd1'
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    orient: 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    showTitle: false,
+                    feature: {
+                        mark: {show: true},
+                        // dataView: {show: true, readOnly: false},
+                        // magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                        // restore: {show: true},
+                        // saveAsImage: {show: true}
+                    }
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#76dbd1'
+                            }
+                        },
+                        // data: ['2012', '2013', '2014', '2015', '2016', '2017'],
+                        data: jsonObj.xAxisData,
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#76dbd1'
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '价费',
+                        type: 'line',
+                        smooth: true,
+                        barGap: 0,
+                        label: labelOption,
+                        //data: [32000, 33200, 30100, 33400, 39000, 30000],
+                        data: jsonObj.priceData,
+                    },
+                    {
+                        name: '税费',
+                        type: 'line',
+                        smooth: true,
+                        label: labelOption,
+                        //data: [220, 182, 191, 234, 290, 300]
+                        data: jsonObj.taxesData
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
         }
     })
-}, 3000);
+}, 500);
 
 

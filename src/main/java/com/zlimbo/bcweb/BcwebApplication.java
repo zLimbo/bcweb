@@ -28,7 +28,7 @@ public class BcwebApplication {
 
         SpringApplication.run(BcwebApplication.class, args);
 
-        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
+        CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
 //        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
 //        testCitaService(service);
         //testProtobuf();

@@ -111,6 +111,11 @@
                             <div class="col-sm-3">
                                 <p id="blockNumber" th:text="${blockNumber}"></p>
                             </div>
+
+                            <label for="txAllNumber" class="col-sm-6 col-form-label">总交易数:</label>
+                            <div class="col-sm-3">
+                                <p id="txAllNumber" th:text="${txAllNumber}"></p>
+                            </div>
                         </div>
 
                     </form>
@@ -165,7 +170,7 @@
             <div class="com-screen-content">
 
                 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-                <div id="main" style="width:640px;height:400px;"></div>
+                <div id="main" style="width:720px;height:400px;"></div>
 
             </div>
             <span class="left-top"></span>
