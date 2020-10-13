@@ -17,29 +17,34 @@
 </head>
 
 <body ms-controller="viewmodel">
-    <div class="container-header">
-        <ul class="nowTime">
-            <li></li>
-            <li></li>
-        </ul>
-        <div class="location">
-            <i class="icon iconfont icon-buoumaotubiao23"></i>
-            <span class="areaName"></span>
-        </div>
-        <h3>华东师大-欧冶区块链平台</h3>
-    </div>
 
-    <div class="container-content">
+<div class="container-header">
+    <ul class="nowTime">
+        <li></li>
+        <li></li>
+    </ul>
+    <div class="location">
+        <i class="icon iconfont icon-buoumaotubiao23"></i>
+        <span class="areaName"></span>
+    </div>
+    <h3>华东师大-欧冶区块链平台</h3>
+</div>
+
+<div class="container-content">
+    <div class="top">
         <div class="window-left">
             <div class="com-count-title">
                 发票数据上链
 
                 <!-- 查询发票 按钮触发模态框 -->
                 <button style="position:absolute; right:120px" class="btn btn-primary btn-sm"
-                        data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票</button>
+                        data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票
+                </button>
                 <!-- 插入发票 按钮触发模态框 -->
-                <button style="position:absolute; right:20px" id="btn-insertModal" class="btn btn-primary btn-sm mybutton"
-                        data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票</button>
+                <button style="position:absolute; right:20px" id="btn-insertModal"
+                        class="btn btn-primary btn-sm mybutton"
+                        data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票
+                </button>
 
             </div>
             <div class="com-screen-content">
@@ -137,6 +142,11 @@
                             <div class="col-sm-3">
                                 <p id="headerTimestamp" th:text="${headerTimestamp}"></p>
                             </div>
+                            
+                            <label for="blockTxNumber" class="col-sm-6 col-form-label">交易数:</label>
+                            <div class="col-sm-3">
+                                <p id="blockTxNumber" th:text="${blockTxNumber}"></p>
+                            </div>
                         </div>
 
                     </form>
@@ -148,10 +158,46 @@
             <span class="right-bottom"></span>
         </div>
     </div>
-    
+
+    <div class="mid">
+        <div class="mid-left">
+            <div class="com-count-title">实时交易金额</div>
+            <div class="com-screen-content">
+
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="main" style="width:600px;height:400px;"></div>
+
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+
+        <div class="mid-right">
+            <div class="com-count-title">发票类型</div>
+            <div class="com-screen-content">
+
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="main2" style="width: 600px;height:400px;"></div>
+
+
+            </div>
+            <span class="left-top"></span>
+            <span class="right-top"></span>
+            <span class="left-bottom"></span>
+            <span class="right-bottom"></span>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+</div>
 
 <!--<div class="bottom">-->
-<!--&lt;!&ndash;    <div class="count-base" >&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="mid-left" >&ndash;&gt;-->
 <!--&lt;!&ndash;        <div class="com-count-title">资源总量构成</div>&ndash;&gt;-->
 <!--&lt;!&ndash;        <div class="com-screen-content">&ndash;&gt;-->
 
@@ -186,7 +232,8 @@
 <!--        </form>-->
 
 <!-- 插入发票 模态框（Modal） -->
-<div class="modal fade" id="myModal-invoiceInsert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal-invoiceInsert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog .modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -299,7 +346,8 @@
 
 
 <!-- 查询发票 模态框（Modal） -->
-<div class="modal fade" id="myModal-invoiceQuery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal-invoiceQuery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -317,7 +365,8 @@
                     <button type="reset" class="btn btn-default" id="btn-test">重置</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" id="btn-invoiceQuery"
-                            data-toggle="modal" data-target="#queryShowModel">查询</button>
+                            data-toggle="modal" data-target="#queryShowModel">查询
+                    </button>
                 </form>
             </div>
         </div><!-- /.modal-content -->
@@ -326,7 +375,8 @@
 
 
 <!-- 查询结果 模态框（Modal） -->
-<div class="modal fade" id="queryShowModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="queryShowModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -458,5 +508,6 @@
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="js/jquery.serializejson.js"></script>
+<script src="js/wonderland.js"></script>
 <script src="js/myscript.js"></script>
 </html>

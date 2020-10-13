@@ -65,6 +65,7 @@ var bcinfoUpdate = {
         $("#blockJsonrpc").html(jsonObj.blockJsonrpc);
         $("#blockVersion").html(jsonObj.blockVersion);
         $("#headerTimestamp").html(jsonObj.headerTimestamp);
+        $("#blockTxNumber").html(jsonObj.blockTxNumber);
         //alert(data["peerCount"]);
         //var jsonObj = eval("(" + data + ")");
     }
@@ -214,73 +215,118 @@ $("#btn-invoiceInsert").click(function () {
     })
 })
 
-// // 查询数据
-// $(document).on("click", "#btn-invoiceQuery", function () {
-//     //var jsonString = JSON.stringify(json);
-//     //var data = $('#invoiceForm').serialize()
-//     // alert(jsonString)
-//     var data = {"hashValue": $("#hashValueForQuery").val()}
-//     alert(JSON.stringify(data));
-//     $.ajax({
-//         type: 'GET',
-//         url: '/invoiceQuery',
-//         dataType: 'text',
-//         data: data,
-//         error: function (request) {
-//             alert("提交失败！");
-//         },
-//         success: function (data) {
-//             var jsonObj = eval("(" + data + ")");
-//             alert(data);
-//         }
-//     })
-// })
+
+var base = +new Date(2014, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var date = [];
+var data = [Math.random() * 150];
+var now = new Date(base);
+
+function addData(shift) {
+    now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
+    date.push(now);
+    data.push((Math.random() - 0.4) * 10 + data[data.length - 1]);
+
+    if (shift) {
+        date.shift();
+        data.shift();
+    }
+
+    now = new Date(+new Date(now) + oneDay);
+}
+
+for (var i = 1; i < 100; i++) {
+    addData();
+}
+
+option = {
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: date
+    },
+    yAxis: {
+        boundaryGap: [0, '50%'],
+        type: 'value'
+    },
+    series: [
+        {
+            name: '成交',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            stack: 'a',
+            areaStyle: {
+                normal: {}
+            },
+            data: data
+        }
+    ]
+};
+
+setInterval(function () {
+    addData(true);
+    myChart1.setOption({
+        xAxis: {
+            data: date
+        },
+        series: [{
+            name: '成交',
+            data: data
+        }]
+    });
+}, 500);
+
+// 基于准备好的dom，初始化echarts实例
+var myChart1 = echarts.init(document.getElementById('main'));
+myChart1.setOption(option)
 
 
-// setInterval('autoScroll(".maquee")', 2000);
-//
-// // 动态滚动
-// function autoScroll(obj) {
-//     var sz = $(obj).find("ul").find("li").size();
-//     if (sz > 6) {
-//         $(obj).find("ul").animate({
-//                 marginTop: "-37px"
-//             }, 500, function () {
-//                 //var sz = $(this).find("li").size();
-//                 //alert( "Size: " + sz);
-//                 $(this).find("li:first").remove();
-//                 $(this).css({marginTop: "0px"});
-//             })
-//     }
-// }
+// 基于准备好的dom，初始化echarts实例
+var myChart2 = echarts.init(document.getElementById('main2'), 'wonderland');
 
-// //定义一个avalonjs的控制器
-// var viewmodel = avalon.define({
-//     //id必须和页面上定义的ms-controller名字相同，否则无法控制页面
-//     $id: "invoices",
-//     datalist: {},
-//
-//     request: function () {
-//         var update = {
-//             type: "post",
-//             url: "/update",    //向后端请求数据的url
-//             data: {},
-//             success: function (data) {
-//                 viewmodel.invoice = data;
-//                 setTimeout(function (){$.ajax(viewmodel);}, 3000);
-//             }
-//         }
-//         $.ajax(update);
-//     }
-// });
+ //myChart2.showLoading();  // 开启 loading 效果
+setInterval(function () {
+    $.ajax({
+        type: "GET",
+        url: "/graphUpdate",
+        dataType: "json",
+        success: function (jsonObj) {
+            // myChart2.hideLoading();  // 隐藏 loading 效果
+            //alert(jsonObj);
+            // 指定图表的配置项和数据
+            var option = {
+                series : [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '45%',
+                        center: ['40%', '40%'],
+                        data:jsonObj.pieData,
+                        roseType: 'angle',
+                        itemStyle: {
+                            normal: {
+                                shadowBlur: 200,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)',
+                            }
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'outter',
+                                textStyle: {
+                                    fontWeight: 200,
+                                    fontSize: 12
+                                },
+                                formatter: '{b} : {c} ({d}%)'
+                            }
+                        }
+                    }
+                ]
+            };
 
-
-// var getting = {
-//     url:'请求的服务器地址',
-//     dataType:'json',
-//     success:function(res) {
-//         $('#com').html(str);
-//         setTimeout(function(){$.ajax(getting);},1000);//1秒后定时发送请求
-//     }
-// };
-// $.ajax(getting)
+            // 使用刚指定的配置项和数据显示图表。
+            myChart2.setOption(option);
+        }
+    })
+}, 3000);

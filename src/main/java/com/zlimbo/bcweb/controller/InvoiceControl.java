@@ -1,12 +1,14 @@
 package com.zlimbo.bcweb.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.citahub.cita.protobuf.Blockchain;
 import com.citahub.cita.protocol.CITAj;
 import com.citahub.cita.protocol.core.DefaultBlockParameter;
 import com.citahub.cita.protocol.core.methods.response.*;
 import com.citahub.cita.protocol.http.HttpService;
+import com.google.gson.JsonObject;
 import com.zlimbo.bcweb.domain.Invoice;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,26 @@ public class InvoiceControl {
 
 
     private long offset = 6;
+    Map<String, Integer> invoiceKindNumber;
+    Map<String, String> zh2en;
+
+
+    public InvoiceControl() {
+        invoiceKindNumber = new HashMap<>();
+        invoiceKindNumber.put("增值税发票", 0);
+        invoiceKindNumber.put("普通发票", 0);
+        invoiceKindNumber.put("专业发票", 0);
+
+//        zh2en = new HashMap<>();
+//        zh2en.put("增值税发票", "vatInvoice");
+//        zh2en.put("普通发票", "plainInvoice");
+//        zh2en.put("专业发票", "proInvoice");
+    }
+
+    private void updateGraphInfo(Invoice invoice) {
+        String invoiceType =  invoice.getInvoiceType();
+        invoiceKindNumber.put(invoiceType, 1 + invoiceKindNumber.get(invoiceType));
+    }
 
     @RequestMapping("")
     public ModelAndView invoiceShow() throws IOException {
@@ -109,7 +131,9 @@ public class InvoiceControl {
         //if (offset == 6 && invoices.size() < offset) offset = invoices.size();
         System.out.println("offset: " + offset);
 
-
+        for (Invoice invoice: invoices) {
+            updateGraphInfo(invoice);
+        }
 
 
         ModelAndView modelAndView = new ModelAndView("index");
@@ -271,28 +295,12 @@ public class InvoiceControl {
 
         if (invoices.isEmpty()) return "";
         offset += 1;
-        return getInvoiceItem(invoices.get(0));
+        Invoice invoice = invoices.get(0);
+        updateGraphInfo(invoice);
+        return getInvoiceItem(invoice);
     }
 
 
-    @RequestMapping(value = "/bcinfoUpdate", method = RequestMethod.GET)
-    @ResponseBody
-    public String bcinfoUpdate() throws IOException {
-        System.out.println("--------------------------------------------bcinfoUpdate ok");
-
-        Map<String, String> hashMap = getBcinfo();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.putAll(hashMap);
-
-        return jsonObject.toJSONString();
-    }
-
-    @RequestMapping(value = "/randomInvoice", method = RequestMethod.GET)
-    @ResponseBody
-    public String randomInvoice() throws NoSuchAlgorithmException {
-        System.out.println("--------------------------------------------randomInvoice ok");
-        return JSON.toJSONString(Invoice.getRandomInvoice());
-    }
 
 
     @RequestMapping("/invoiceInsert")
@@ -364,6 +372,50 @@ public class InvoiceControl {
             return getInvoiceItem(invoice);
         }
         return "";
+    }
+
+
+    @RequestMapping(value = "/randomInvoice", method = RequestMethod.GET)
+    @ResponseBody
+    public String randomInvoice() {
+        System.out.println("--------------------------------------------randomInvoice ok");
+        return JSON.toJSONString(Invoice.getRandomInvoice());
+    }
+
+
+    @RequestMapping(value = "/bcinfoUpdate", method = RequestMethod.GET)
+    @ResponseBody
+    public String bcinfoUpdate() throws IOException {
+        System.out.println("--------------------------------------------bcinfoUpdate ok");
+
+        Map<String, String> hashMap = getBcinfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putAll(hashMap);
+
+        return jsonObject.toJSONString();
+    }
+
+
+    @RequestMapping(value = "/graphUpdate", method = RequestMethod.GET)
+    @ResponseBody
+    public String graphUpdate() throws IOException {
+        System.out.println("--------------------------------------------graphUpdate ok");
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray pieData = new JSONArray();
+
+        Set<String> keySet = invoiceKindNumber.keySet();
+        for (String key: keySet) {
+            JSONObject oneKV = new JSONObject();
+            oneKV.put("value", invoiceKindNumber.get(key));
+            oneKV.put("name", key);
+            pieData.add(oneKV);
+        }
+        jsonObject.put("pieData", pieData);
+        String jsonObj = jsonObject.toJSONString();
+        System.out.println(jsonObj);
+        //jsonObject.putAll(invoiceKindNumber);
+        return jsonObj;
     }
 
 
