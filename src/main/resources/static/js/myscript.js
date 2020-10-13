@@ -216,75 +216,164 @@ $("#btn-invoiceInsert").click(function () {
 })
 
 
-var base = +new Date(2014, 9, 3);
-var oneDay = 24 * 3600 * 1000;
-var date = [];
-var data = [Math.random() * 150];
-var now = new Date(base);
 
-function addData(shift) {
-    now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
-    date.push(now);
-    data.push((Math.random() - 0.4) * 10 + data[data.length - 1]);
 
-    if (shift) {
-        date.shift();
-        data.shift();
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+var posList = [
+    'left', 'right', 'top', 'bottom',
+    'inside',
+    'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+    'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+];
+
+var app = {};
+app.configParameters = {
+    rotate: {
+        min: -90,
+        max: 90
+    },
+    align: {
+        options: {
+            left: 'left',
+            center: 'center',
+            right: 'right'
+        }
+    },
+    verticalAlign: {
+        options: {
+            top: 'top',
+            middle: 'middle',
+            bottom: 'bottom'
+        }
+    },
+    position: {
+        options: echarts.util.reduce(posList, function (map, pos) {
+            map[pos] = pos;
+            return map;
+        }, {})
+    },
+    distance: {
+        min: 0,
+        max: 100
     }
+};
 
-    now = new Date(+new Date(now) + oneDay);
-}
+app.config = {
+    rotate: 30, // 柱形数字倾斜角度
+    align: 'left',
+    verticalAlign: 'middle',
+    position: 'top',
+    distance: 10,
+    onChange: function () {
+        var labelOption = {
+            normal: {
+                rotate: app.config.rotate,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                position: app.config.position,
+                distance: app.config.distance
+            }
+        };
+        myChart.setOption({
+            series: [{
+                label: labelOption
+            }, {
+                label: labelOption
+            }]
+        });
+    }
+};
+var labelOption = {
+    show: true,
+    position: app.config.position,
+    distance: app.config.distance,
+    align: app.config.align,
+    verticalAlign: app.config.verticalAlign,
+    rotate: app.config.rotate,
+    formatter: '{c}',
+    fontSize: 9,
+    rich: {
+        name: {
+            textBorderColor: '#fff'
+        }
+    }
+};
 
-for (var i = 1; i < 100; i++) {
-    addData();
-}
-
+// 指定图表的配置项和数据
 option = {
-    xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: date
+    color: ['#4cabce', '#e5323e'],
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
     },
-    yAxis: {
-        boundaryGap: [0, '50%'],
-        type: 'value'
+    legend: {
+        data: ['价费', '税费'],
+        textStyle: {
+            color: '#76dbd1'
+        }
     },
+    toolbox: {
+        show: true,
+        orient: 'vertical',
+        left: 'right',
+        top: 'center',
+        showTitle: false,
+        feature: {
+            mark: {show: true},
+            // dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            // restore: {show: true},
+            // saveAsImage: {show: true}
+        }
+    },
+    xAxis: [
+        {
+            type: 'category',
+            axisLine: {
+                lineStyle: {
+                    color: '#76dbd1'
+                }
+            },
+            data: ['2012', '2013', '2014', '2015', '2016', '2017'],
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            axisLine: {
+                lineStyle: {
+                    color: '#76dbd1'
+                }
+            }
+        }
+    ],
     series: [
         {
-            name: '成交',
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            stack: 'a',
-            areaStyle: {
-                normal: {}
-            },
-            data: data
+            name: '价费',
+            type: 'bar',
+            barGap: 0,
+            label: labelOption,
+            data: [32000, 33200, 30100, 33400, 39000, 30000],
+        },
+        {
+            name: '税费',
+            type: 'bar',
+            label: labelOption,
+            data: [220, 182, 191, 234, 290, 300]
         }
     ]
 };
 
-setInterval(function () {
-    addData(true);
-    myChart1.setOption({
-        xAxis: {
-            data: date
-        },
-        series: [{
-            name: '成交',
-            data: data
-        }]
-    });
-}, 500);
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
 
-// 基于准备好的dom，初始化echarts实例
-var myChart1 = echarts.init(document.getElementById('main'));
-myChart1.setOption(option)
 
 
 // 基于准备好的dom，初始化echarts实例
 var myChart2 = echarts.init(document.getElementById('main2'), 'wonderland');
-
  //myChart2.showLoading();  // 开启 loading 效果
 setInterval(function () {
     $.ajax({
@@ -324,9 +413,12 @@ setInterval(function () {
                     }
                 ]
             };
-
             // 使用刚指定的配置项和数据显示图表。
             myChart2.setOption(option);
+
+
         }
     })
 }, 3000);
+
+
