@@ -63,7 +63,7 @@
                         <ul>
                             <li th:each="invoice: ${invoices}">
                                 <div th:text="${invoice.invoiceDate}"></div>
-                                <div th:text="${invoice.buyerName}"></div>
+                                <div th:text="${#strings.abbreviate(invoice.buyerName,8)}" th:title="${invoice.buyerName}"></div>
                                 <div th:text="${invoice.sellerName}"></div>
                                 <div th:text="${invoice.invoiceType}"></div>
                                 <div th:text="${invoice.taxesPoint}"></div>
