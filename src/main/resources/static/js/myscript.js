@@ -96,6 +96,10 @@ $("#randomInvoice").click(function (){
 })
 
 
+$("#btn-invoiceQueryStart").click(function (){
+    $("#hashValueForQuery").val("");
+})
+
 // 查询数据
 $("#btn-invoiceQuery").click(function (){
     $("#query-hashValue").val("");
@@ -128,6 +132,8 @@ $("#btn-invoiceQuery").click(function (){
         data: data,
         error: function (request) {
             //alert("提交错误");
+            //$("#queryShowModel").modal('hide');
+            $("#myModalLabel-queryShow").html("查询结果为空，不存在该交易！")
         },
         success: function (jsonObj) {
             //var jsonObj = eval("(" + data + ")");
@@ -203,7 +209,21 @@ $("#btn-invoiceInsert").click(function () {
 })
 
 
-
+var invoiceUpdate = {
+    type: "get",
+    url: "/invoiceUpdate",    //向后端请求数据的url
+    success: function (liItem) {
+        if (liItem) {
+            $(".maquee").find("ul").animate({
+                marginTop: "-37px"
+            }, 500, function () {
+                $(this).append(liItem);
+                $(this).find("li:first").remove();
+                $(this).css({marginTop: "0px"});
+            })
+        }
+    }
+};
 
 // 基于准备好的dom，初始化echarts实例
 var myChart = echarts.init(document.getElementById('main'));
@@ -213,6 +233,7 @@ var posList = [
     'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
     'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
 ];
+
 
 var app = {};
 app.configParameters = {
@@ -288,21 +309,7 @@ var labelOption = {
 };
 
 
-var invoiceUpdate = {
-    type: "get",
-    url: "/invoiceUpdate",    //向后端请求数据的url
-    success: function (liItem) {
-        if (liItem) {
-            $(".maquee").find("ul").animate({
-                marginTop: "-37px"
-            }, 500, function () {
-                $(this).append(liItem);
-                $(this).find("li:first").remove();
-                $(this).css({marginTop: "0px"});
-            })
-        }
-    }
-};
+
 
 // 基于准备好的dom，初始化echarts实例
 var myChart2 = echarts.init(document.getElementById('main2'), 'wonderland');
@@ -424,6 +431,6 @@ setInterval(function () {
 
         }
     })
-}, 500);
+}, 1000);
 
 

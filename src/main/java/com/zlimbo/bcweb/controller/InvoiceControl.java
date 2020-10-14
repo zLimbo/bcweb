@@ -352,7 +352,7 @@ public class InvoiceControl {
         jsonObject.put("taxesData", taxesData);
 
         String jsonObj = jsonObject.toJSONString();
-        System.out.println(jsonObj);
+        //System.out.println(jsonObj);
         //jsonObject.putAll(invoiceKindNumber);
         return jsonObj;
     }
@@ -458,7 +458,8 @@ public class InvoiceControl {
     Map<String, String> getBcinfo() throws IOException {
         Map<String, String> hashMap = new HashMap<>();
 
-        CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
+        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
+        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
 
         NetPeerCount netPeerCount = service.netPeerCount().send();
         BigInteger peerCount = netPeerCount.getQuantity();

@@ -37,7 +37,7 @@
                 发票数据上链
 
                 <!-- 查询发票 按钮触发模态框 -->
-                <button style="position:absolute; right:120px" class="btn btn-primary btn-sm"
+                <button style="position:absolute; right:120px" id="btn-invoiceQueryStart" class="btn btn-primary btn-sm"
                         data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票
                 </button>
                 <!-- 插入发票 按钮触发模态框 -->
@@ -386,7 +386,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">查询结果</h4>
+                <h4 class="modal-title" id="myModalLabel-queryShow">查询结果</h4>
             </div>
             <div class="modal-footer">
                 <form class="form-horizontal" id="invoiceInsert" role="form" action="#"
