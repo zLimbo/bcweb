@@ -133,7 +133,7 @@ $("#btn-invoiceQuery").click(function (){
         error: function (request) {
             //alert("提交错误");
             //$("#queryShowModel").modal('hide');
-            $("#myModalLabel-queryShow").html("查询结果为空，不存在该交易！")
+            $("#myModalLabel-querqyShow").html("查询结果为空，不存在该交易！")
         },
         success: function (jsonObj) {
             //var jsonObj = eval("(" + data + ")");
