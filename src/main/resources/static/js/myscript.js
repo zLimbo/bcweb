@@ -393,6 +393,31 @@ setInterval(function () {
                         },
                         // data: ['2012', '2013', '2014', '2015', '2016', '2017'],
                         data: jsonObj.xAxisData,
+                        axisLabel: {
+                            // show:true,
+                            // interval: 0, //强制所有标签显示
+                            // align:'left',
+                            // margin: 115, //标签向右移动 如果yAxis 跟 xAxis换了,这个margin应该调为0才能看见标签显示
+                            // textStyle: {
+                            //     color: "#000",
+                            // },
+                            formatter: function (params){   //标签输出形式 ---请开始你的表演
+                                var strs = params.split("\n");
+                                var ret = strs[0];
+                                var len = 7;
+                                if (strs[1].length <= 6) {
+                                    ret += "\n" + strs[1].substring(0, len);
+                                } else {
+                                    ret += "\n" + strs[1].substring(0, len - 1) + "...";
+                                }
+                                if (strs[2].length <= 6) {
+                                    ret += "\n" + strs[2].substring(0, len);
+                                } else {
+                                    ret += "\n" + strs[2].substring(0, len - 1) + "...";
+                                }
+                                return ret;
+                            },
+                        },
                     }
                 ],
                 yAxis: [

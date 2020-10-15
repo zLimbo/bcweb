@@ -44,17 +44,16 @@ public class InvoiceControl {
     private int offset = ITEM_SIZE;
     private boolean isAdd = false;
     private int txAllNumber = 0;
-    Map<String, Integer> invoiceKindNumber;
+//    Map<String, Integer> invoiceKindNumber;
     LinkedList<String> xAxisData;
     LinkedList<String> priceData;
     LinkedList<String> taxesData;
+    private int vatNumber = 0;
+    private int normalNumber = 0;
+    private int professionalNumber = 0;
 
 
     public InvoiceControl() {
-        invoiceKindNumber = new HashMap<>();
-        invoiceKindNumber.put("增值税发票", 0);
-        invoiceKindNumber.put("普通发票", 0);
-        invoiceKindNumber.put("专业发票", 0);
 
         xAxisData = new LinkedList<>();
         priceData = new LinkedList<>();
@@ -65,7 +64,13 @@ public class InvoiceControl {
 
     private void updateGraphInfo(Invoice invoice) {
         String invoiceType =  invoice.getInvoiceType();
-        invoiceKindNumber.put(invoiceType, 1 + invoiceKindNumber.get(invoiceType));
+        if (invoiceType.equals("增值税发票")) {
+            vatNumber += 1;
+        } else if (invoiceType.equals("普通发票")) {
+            normalNumber += 1;
+        } else if (invoiceType.equals("专业发票")) {
+            professionalNumber += 1;
+        }
         xAxisData.add(invoice.getInvoiceDate() + "\n买:" +
                 invoice.getBuyerName() + "\n卖:" +
                 invoice.getSellerName());
@@ -164,8 +169,6 @@ public class InvoiceControl {
 
         return modelAndView;
     }
-
-
 
 
     @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
@@ -329,13 +332,19 @@ public class InvoiceControl {
         JSONObject jsonObject = new JSONObject();
         JSONArray pieData = new JSONArray();
 
-        Set<String> keySet = invoiceKindNumber.keySet();
-        for (String key: keySet) {
-            JSONObject oneKV = new JSONObject();
-            oneKV.put("value", invoiceKindNumber.get(key));
-            oneKV.put("name", key);
-            pieData.add(oneKV);
-        }
+        JSONObject vatData = new JSONObject();
+        JSONObject normalData = new JSONObject();
+        JSONObject professionalData = new JSONObject();
+        vatData.put("value", vatNumber);
+        vatData.put("name", "增值税发票");
+        normalData.put("value", normalNumber);
+        normalData.put("name", "普通发票");
+        professionalData.put("value", professionalNumber);
+        professionalData.put("name", "专业发票");
+        pieData.add(vatData);
+        pieData.add(normalData);
+        pieData.add(professionalData);
+
         jsonObject.put("pieData", pieData);
 
         JSONArray xAxisJson = new JSONArray();
@@ -352,8 +361,7 @@ public class InvoiceControl {
         jsonObject.put("taxesData", taxesData);
 
         String jsonObj = jsonObject.toJSONString();
-        //System.out.println(jsonObj);
-        //jsonObject.putAll(invoiceKindNumber);
+        System.out.println(jsonObj);
         return jsonObj;
     }
 

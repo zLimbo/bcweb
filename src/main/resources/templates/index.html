@@ -62,14 +62,14 @@
                     <div class="maquee">
                         <ul>
                             <li th:each="invoice: ${invoices}">
-                                <div th:text="${invoice.invoiceDate}"></div>
-                                <div th:text="${#strings.abbreviate(invoice.buyerName,8)}" th:title="${invoice.buyerName}"></div>
-                                <div th:text="${invoice.sellerName}"></div>
-                                <div th:text="${invoice.invoiceType}"></div>
-                                <div th:text="${invoice.taxesPoint}"></div>
-                                <div th:text="${invoice.price}"></div>
-                                <div th:text="${invoice.taxes}"></div>
-                                <div th:text="${invoice.pricePlusTaxes}"></div>
+                                <div th:text="${invoice.invoiceDate}" th:title="${invoice.invoiceDate}"></div>
+                                <div th:text="${invoice.buyerName}" th:title="${invoice.buyerName}"></div>
+                                <div th:text="${invoice.sellerName}" th:title="${invoice.sellerName}"></div>
+                                <div th:text="${invoice.invoiceType}" th:title="${invoice.invoiceType}"></div>
+                                <div th:text="${invoice.taxesPoint}" th:title="${invoice.taxesPoint}"></div>
+                                <div th:text="${invoice.price}" th:title="${invoice.price}"></div>
+                                <div th:text="${invoice.taxes}" th:title="${invoice.taxes}"></div>
+                                <div th:text="${invoice.pricePlusTaxes}" th:title="${invoice.pricePlusTaxes}"></div>
                             </li>
                         </ul>
                     </div>
