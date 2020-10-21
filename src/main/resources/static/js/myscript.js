@@ -209,6 +209,32 @@ $("#btn-invoiceInsert").click(function () {
 })
 
 
+$("#btn-deployContract").click(function (){
+    $("#tableName").val("");
+    $("#bytecode").val("");
+})
+
+// 部署合约
+$("#btn-deployContract-submit").click(function (){
+    var data = {
+        "tableName": $("#tableName").val(),
+        "bytecode": $("#bytecode").val()
+    };
+    //alert(data);
+    $.ajax({
+        type: 'POST',
+        url: '/deployContract',
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (data) {
+            alert(data);
+            $("#myModal-deployContract").modal('hide');
+        }
+    })
+})
+
+
+// 实时更新滚动表格
 var invoiceUpdate = {
     type: "get",
     url: "/invoiceUpdate",    //向后端请求数据的url

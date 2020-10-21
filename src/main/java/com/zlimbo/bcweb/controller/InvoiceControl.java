@@ -30,11 +30,11 @@ public class InvoiceControl {
 
     static final String DB_URL =
             "jdbc:mysql://localhost:3306/ouyeel" +
-            "?useSSL=false" +
-            "&useUnicode=true" +
-            "&characterEncoding=UTF8" +
-            "&serverTimezone=GMT" +
-            "&allowPublicKeyRetrieval=true";
+                    "?useSSL=false" +
+                    "&useUnicode=true" +
+                    "&characterEncoding=UTF8" +
+                    "&serverTimezone=GMT" +
+                    "&allowPublicKeyRetrieval=true";
     //  Database credentials
     static final String USER = "root";
     static final String PASS = "123456";
@@ -44,7 +44,7 @@ public class InvoiceControl {
     private int offset = ITEM_SIZE;
     private boolean isAdd = false;
     private int txAllNumber = 0;
-//    Map<String, Integer> invoiceKindNumber;
+    //    Map<String, Integer> invoiceKindNumber;
     LinkedList<String> xAxisData;
     LinkedList<String> priceData;
     LinkedList<String> taxesData;
@@ -63,7 +63,7 @@ public class InvoiceControl {
 
 
     private void updateGraphInfo(Invoice invoice) {
-        String invoiceType =  invoice.getInvoiceType();
+        String invoiceType = invoice.getInvoiceType();
         if (invoiceType.equals("增值税发票")) {
             vatNumber += 1;
         } else if (invoiceType.equals("普通发票")) {
@@ -249,7 +249,7 @@ public class InvoiceControl {
 
     @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
     @ResponseBody
-    public String invoiceUpdate() {
+    public synchronized String invoiceUpdate() {
 
         List<Invoice> invoices = new ArrayList<Invoice>();
         Connection conn = null;
@@ -366,11 +366,10 @@ public class InvoiceControl {
     }
 
 
-
-
     @RequestMapping("/invoiceInsert")
     @ResponseBody
-    public String invoiceInsert(@RequestBody Invoice invoice) {
+    public String invoiceInsert(@RequestBody Invoice invoice) throws InterruptedException {
+
         System.out.println("--------------------------------------------invoiceInsert ok");
         Connection conn = null;
         Statement stmt = null;
@@ -388,22 +387,22 @@ public class InvoiceControl {
             stmt = conn.createStatement();
 
             String sql = "INSERT INTO invoice VALUES(" +
-                    "\"" + invoice.getHashValue() +       "\", " +
-                    "\"" + invoice.getInvoiceNo() +       "\", " +
-                    "\"" + invoice.getBuyerName() +       "\", " +
-                    "\"" + invoice.getBuyerTaxesNo() +    "\", " +
-                    "\"" + invoice.getSellerName() +      "\", " +
-                    "\"" + invoice.getSellerTaxesNo() +   "\", " +
-                    "\"" + invoice.getInvoiceDate() +     "\", " +
-                    "\"" + invoice.getInvoiceType() +     "\", " +
-                    "\"" + invoice.getTaxesPoint() +      "\", " +
-                    "\"" + invoice.getTaxes() +           "\", " +
-                    "\"" + invoice.getPrice() +           "\", " +
-                    "\"" + invoice.getPricePlusTaxes() +  "\", " +
-                    "\"" + invoice.getInvoiceNumber() +   "\", " +
-                    "\"" + invoice.getStatementSheet() +  "\", " +
+                    "\"" + invoice.getHashValue() + "\", " +
+                    "\"" + invoice.getInvoiceNo() + "\", " +
+                    "\"" + invoice.getBuyerName() + "\", " +
+                    "\"" + invoice.getBuyerTaxesNo() + "\", " +
+                    "\"" + invoice.getSellerName() + "\", " +
+                    "\"" + invoice.getSellerTaxesNo() + "\", " +
+                    "\"" + invoice.getInvoiceDate() + "\", " +
+                    "\"" + invoice.getInvoiceType() + "\", " +
+                    "\"" + invoice.getTaxesPoint() + "\", " +
+                    "\"" + invoice.getTaxes() + "\", " +
+                    "\"" + invoice.getPrice() + "\", " +
+                    "\"" + invoice.getPricePlusTaxes() + "\", " +
+                    "\"" + invoice.getInvoiceNumber() + "\", " +
+                    "\"" + invoice.getStatementSheet() + "\", " +
                     "\"" + invoice.getStatementWeight() + "\", " +
-                    "\"" + invoice.getTimestamp() +       "\", " +
+                    "\"" + invoice.getTimestamp() + "\", " +
                     "\"" + invoice.getContractAddress() + "\")";
 
             System.out.println("sql: " + sql);
@@ -437,6 +436,7 @@ public class InvoiceControl {
             updateGraphInfo(invoice);
             return getInvoiceItem(invoice);
         }
+        //Thread.sleep(10000);
         return "";
     }
 
@@ -460,7 +460,6 @@ public class InvoiceControl {
 
         return jsonObject.toJSONString();
     }
-
 
 
     Map<String, String> getBcinfo() throws IOException {
@@ -487,7 +486,7 @@ public class InvoiceControl {
         hashMap.put("chainId", chainId.toString());
         hashMap.put("chainName", chainName);
         hashMap.put("genesisTS", genesisTS);
-        
+
 
         AppBlock appBlock = service.appGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send();
         hashMap.put("blockId", String.valueOf(appBlock.getId()));
@@ -513,84 +512,6 @@ public class InvoiceControl {
         txAllNumber += blockTxNumber;
         hashMap.put("txAllNumber", String.valueOf(txAllNumber));
 
-//        if (appBlock.isEmpty()) {
-//            System.out.println("This no block!");
-//        } else {
-//            AppBlock.Block block = appBlock.getBlock();
-//            System.out.println("--------Block");
-//            System.out.print("version: ");
-//            System.out.println(block.getVersion());
-//            System.out.print("hash: ");
-//            System.out.println(block.getHash());
-//
-//            AppBlock.Header header = block.getHeader();
-//            System.out.println("------------header");
-//            System.out.print("timestamp: ");
-//            System.out.println(header.getTimestamp());
-//            System.out.print("prevHash ");
-//            System.out.println(header.getPrevHash());
-//            System.out.print("number: ");
-//            System.out.println(header.getNumber());
-//            System.out.print("stateRoot ");
-//            System.out.println(header.getStateRoot());
-//            System.out.print("transactionsRoot: ");
-//            System.out.println(header.getTransactionsRoot());
-//            System.out.print("receiptsRoot: ");
-//            System.out.println(header.getReceiptsRoot());
-//            System.out.print("quotaUsed: ");
-//            System.out.println(header.getQuotaUsed());
-//            System.out.print("proposer: ");
-//            System.out.println(header.getProposer());
-//
-//            AppBlock.Body body = block.getBody();
-//            List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
-//            System.out.println("------------body(txs): ");
-//            System.out.println("This is " + transactionObjects.size() + " transactions.");
-//
-//            for (AppBlock.TransactionObject transactionObject : transactionObjects) {
-//                Transaction transaction = transactionObject.get();
-//                System.out.print("hash: ");
-//                System.out.println(transaction.getHash());
-//                System.out.print("blockHash: ");
-//                System.out.println(transaction.getBlockHash());
-////                    System.out.print("blockNumber: ");
-////                    System.out.println(transaction.getBlockNumber());
-//                System.out.print("content: ");
-//                System.out.println(transaction.getContent());
-//                System.out.print("index: ");
-//                System.out.println(transaction.getIndex());
-//                System.out.print("from: ");
-//                System.out.println(transaction.getFrom());
-//                System.out.println();
-//
-//
-//                // byte[] data = transaction.getContent().getBytes();
-//                String content = transaction.getContent().substring(2);
-//                System.out.println("content: " + content);
-//                BigInteger bigInteger = new BigInteger(content, 16);
-//                System.out.println("bigInteger: " + bigInteger);
-//                byte[] data = bigInteger.toByteArray();
-//                Blockchain.UnverifiedTransaction unverifiedTransaction = Blockchain.UnverifiedTransaction.parseFrom(data);
-//                Blockchain.Transaction txContent = unverifiedTransaction.getTransaction();
-//
-//                System.out.println("----------------UnverifiedTransaction: ");
-//                System.out.println("crypto: " + unverifiedTransaction.getCryptoValue());
-//                System.out.println("signature: " + byteToString(unverifiedTransaction.getSignature()));
-//                System.out.println("--------------------txContent: ");
-//                System.out.println("to: " + txContent.getTo());
-//                System.out.println("nonce: " + txContent.getNonce());
-//                System.out.println("quota: " + txContent.getQuota());
-//                System.out.println("valid_until_block: " + txContent.getValidUntilBlock());
-//                System.out.println("data: " +  byteToString(txContent.getData()));
-//                System.out.println("value: " + byteToString(txContent.getValue()));
-//                System.out.println("chain_id: " + txContent.getChainId());
-//                System.out.println("version: " + txContent.getVersion());
-//                System.out.println("to_v1: " + byteToString(txContent.getToV1()));
-//                System.out.println("chain_id_v1: " + byteToString(txContent.getChainIdV1()));
-//                System.out.println();
-//            }
-//        }
-
         return hashMap;
     }
 
@@ -607,102 +528,62 @@ public class InvoiceControl {
                 invoice.getPricePlusTaxes() + "</div>\n</li>";
     }
 
-//    @ResponseBody
-//    @PostMapping("/insertInvoice")
-//    public String invoiceSubmit(@ModelAttribute Invoice invoice) {
-//        System.out.println("--------------------------------------------insertInvoice post");
-//
-//        Connection conn = null;
-//        Statement stmt = null;
-//        try {
-//            //STEP 2: Register JDBC driver
-//            Class.forName("com.mysql.jdbc.Driver");
-//
-//            //STEP 3: Open a connection
-//            System.out.println("Connecting to a selected database...");
-//            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//            System.out.println("Connected database successfully...");
-//
-//            //STEP 4: Execute a query
-//            System.out.println("Creating statement...");
-//            stmt = conn.createStatement();
-//
-//            String sql = "INSERT INTO invoice VALUES(NULL, " +
-//                    "\"" + invoice.getHashValue() +       "\", " +
-//                    "\"" + invoice.getInvoiceNo() +       "\", " +
-//                    "\"" + invoice.getBuyerName() +       "\", " +
-//                    "\"" + invoice.getBuyerTaxesNo() +    "\", " +
-//                    "\"" + invoice.getSellerName() +      "\", " +
-//                    "\"" + invoice.getSellerTaxesNo() +   "\", " +
-//                    "\"" + invoice.getInvoiceDate() +     "\", " +
-//                    "\"" + invoice.getInvoiceType() +     "\", " +
-//                    "\"" + invoice.getTaxesPoint() +      "\", " +
-//                    "\"" + invoice.getTaxes() +           "\", " +
-//                    "\"" + invoice.getPrice() +           "\", " +
-//                    "\"" + invoice.getPricePlusTaxes() +  "\", " +
-//                    "\"" + invoice.getInvoiceNumber() +   "\", " +
-//                    "\"" + invoice.getStatementSheet() +  "\", " +
-//                    "\"" + invoice.getStatementWeight() + "\", " +
-//                    "\"" + invoice.getTimestamp() +       "\")";
-//
-//            System.out.println("sql: " + sql);
-//            stmt.execute(sql);
-//        } catch (SQLException se) {
-//            //Handle errors for JDBC
-//            se.printStackTrace();
-//        } catch (Exception e) {
-//            //Handle errors for Class.forName
-//            e.printStackTrace();
-//        } finally {
-//            //finally block used to close resources
-//            try {
-//                if (stmt != null)
-//                    conn.close();
-//            } catch (SQLException se) {
-//            }// do nothing
-//            try {
-//                if (conn != null)
-//                    conn.close();
-//            } catch (SQLException se) {
-//                se.printStackTrace();
-//            }//end finally try
-//        }//end try
-//
-//        return "redirect:";
-//    }
 
 
+
+    @RequestMapping(value = "/deployContract", method = RequestMethod.POST)
+    @ResponseBody
+    public String deployContract(@RequestBody Map<String, Object> params) {
+        System.out.println("--------------------------------------------deployContract ok");
+        System.out.println("tableName: " + params.get("tableName"));
+        System.out.println("bytecode: " + params.get("bytecode"));
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            //STEP 2: Register JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //STEP 3: Open a connection
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("Connected database successfully...");
+
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+
+            String sql = "INSERT INTO sc VALUES(" +
+                    "\"" + params.get("tableName") + "\", " +
+                    "\"" + params.get("bytecode") + "\")";
+
+            System.out.println("sql: " + sql);
+            stmt.execute(sql);
+        } catch (SQLException se) {
+            System.out.println("-----------------SQLException");
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("-----------------Exception");
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null)
+                    conn.close();
+            } catch (SQLException se) {
+            }// do nothing
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+
+        }
+        return "部署成功";
+    }
 }
 
 
-
-
-
-//        String sql = "select * from invoice";
-//        List<Invoice> invoices = jdbcTemplate.query(sql,
-//                new RowMapper<Invoice>() {
-//                    @Override
-//                    public Invoice mapRow(ResultSet resultSet, int i) throws SQLException {
-//                        return new Invoice(
-//                                resultSet.getString("id"),
-//                                resultSet.getString("hashValue"),
-//                                resultSet.getString("invoiceNo"),
-//                                resultSet.getString("buyerName"),
-//                                resultSet.getString("buyerTaxesNo"),
-//                                resultSet.getString("sellerName"),
-//                                resultSet.getString("sellerTaxesNo"),
-//                                resultSet.getString("invoiceDate"),
-//                                resultSet.getString("invoiceType"),
-//                                resultSet.getString("taxesPoint"),
-//                                resultSet.getString("taxes"),
-//                                resultSet.getString("price"),
-//                                resultSet.getString("pricePlusTaxes"),
-//                                resultSet.getString("invoiceNumber"),
-//                                resultSet.getString("statementSheet"),
-//                                resultSet.getString("statementWeight"),
-//                                resultSet.getString("timestamp")
-//                        );
-//                    }
-//                });
-
-
+ 

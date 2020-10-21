@@ -37,13 +37,18 @@
                 发票数据上链
 
                 <!-- 查询发票 按钮触发模态框 -->
-                <button style="position:absolute; right:120px" id="btn-invoiceQueryStart" class="btn btn-primary btn-sm"
+                <button style="position:absolute; right:220px" id="btn-invoiceQueryStart" class="btn btn-primary btn-sm"
                         data-toggle="modal" data-target="#myModal-invoiceQuery">查询发票
                 </button>
                 <!-- 插入发票 按钮触发模态框 -->
-                <button style="position:absolute; right:20px" id="btn-insertModal"
+                <button style="position:absolute; right:120px" id="btn-insertModal"
                         class="btn btn-primary btn-sm mybutton"
                         data-toggle="modal" data-target="#myModal-invoiceInsert">增加发票
+                </button>
+                <!-- 部署合约 按钮触发模态框 -->
+                <button style="position:absolute; right:20px" id="btn-deployContract"
+                        class="btn btn-primary btn-sm mybutton"
+                        data-toggle="modal" data-target="#myModal-deployContract">部署合约
                 </button>
 
             </div>
@@ -341,6 +346,7 @@
                     </div>
                     <button type="button" class="btn btn-default" id="randomInvoice">随机生成</button>
                     <button type="reset" class="btn btn-default" id="btn-test">重置</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" id="btn-invoiceInsert">提交</button>
                 </form>
 
@@ -501,6 +507,39 @@
                                    value="" id="query-contractAddress">
                         </div>
                     </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 部署合约 模态框（Modal） -->
+<div class="modal fade" id="myModal-deployContract" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">部署合约</h4>
+            </div>
+            <div class="modal-footer">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="tableName" class="col-sm-2 control-label">表名:</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="tableName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bytecode" class="col-sm-2 control-label">字节码:</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" rows="8" id="bytecode"></textarea>
+<!--                            <input type="text" class="form-control" id="hashValueForQuery">-->
+                        </div>
+                    </div>
+                    <button type="reset" class="btn btn-default" id="btn-test">重置</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="btn-deployContract-submit">提交</button>
                 </form>
             </div>
         </div><!-- /.modal-content -->
