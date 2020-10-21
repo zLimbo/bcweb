@@ -1,0 +1,146 @@
+<div layout:decorator="base">
+    <div layout:fragment="menu">
+    </div>
+
+    <div layout:fragment="content">
+        <div class="container-fluid  dashboard-content">
+            <div class="row">
+                <!-- ============================================================== -->
+                <!-- valifation types -->
+                <!-- ============================================================== -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="card">
+                        <h5 class="card-header">交易信息</h5>
+                        <div class="card-body">
+                            <form id="invoice-insert-form" data-parsley-validate="" novalidate="">
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">哈希值</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-pattern="0[xX][A-Fa-f0-9]{32}" placeholder="0x开头，32位十六进制数" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">发票号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[8,20]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">购方全称</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[1,40]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">购方税号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[15,20]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">销方全称</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[1,40]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">销方税号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[15,20]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-sm-right">发票类型</label>
+                                    <div class="col-sm-6">
+                                        <div class="custom-controls-stacked">
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="radio-inline" checked="" class="custom-control-input">
+                                                <span class="custom-control-label">普通发票</span>
+                                            </label>
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="radio-inline" class="custom-control-input">
+                                                <span class="custom-control-label">专业发票</span>
+                                            </label>
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="radio-inline" class="custom-control-input">
+                                                <span class="custom-control-label">增值税发票</span>
+                                            </label>
+
+<!--                                            <label class="custom-control custom-checkbox">-->
+<!--                                                <input id="ck1" name="ck1" type="checkbox" data-parsley-multiple="groups" value="bar" data-parsley-mincheck="2" data-parsley-errors-container="#error-container1" class="custom-control-input">-->
+<!--                                                <span class="custom-control-label">普通发票</span>-->
+<!--                                            </label>-->
+<!--                                            <label class="custom-control custom-checkbox">-->
+<!--                                                <input id="ck2" name="ck2" type="checkbox" data-parsley-multiple="groups" value="bar2" data-parsley-mincheck="2" data-parsley-errors-container="#error-container1" class="custom-control-input">-->
+<!--                                                <span class="custom-control-label">专业发票</span>-->
+<!--                                            </label>-->
+<!--                                            <label class="custom-control custom-checkbox">-->
+<!--                                                <input id="ck3" name="ck3" type="checkbox" data-parsley-multiple="groups" value="bar3" data-parsley-mincheck="2" required="" data-parsley-errors-container="#error-container1" class="custom-control-input">-->
+<!--                                                <span class="custom-control-label">增值税发票</span>-->
+<!--                                            </label>-->
+<!--                                            <div id="error-container1"></div>-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">税点</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input data-parsley-type="number" type="text" required="" placeholder="数值" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">税费</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input data-parsley-type="number" type="text" required="" placeholder="数值" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">价费</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input data-parsley-type="number" type="text" required="" placeholder="数值" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">价税合计</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input data-parsley-type="number" type="text" required="" placeholder="数值" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">发票数量</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input required="" type="number" min="1" max="100" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">结算单</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input type="text" required="" data-parsley-length="[12,20]" placeholder="" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">结算重量</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input data-parsley-type="number" type="text" required="" placeholder="数值" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row text-right">
+                                    <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                        <button type="submit" class="btn btn-space btn-primary">提交</button>
+                                        <button class="btn btn-space btn-secondary">取消</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- end valifation types -->
+                <!-- ============================================================== -->
+            </div>
+
+        </div>
+    </div>
+</div>

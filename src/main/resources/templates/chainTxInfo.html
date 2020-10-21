@@ -1,0 +1,130 @@
+<div layout:decorator="base">
+
+    <div layout:fragment="content">
+        <!--        <link rel="stylesheet" href="icon/iconfont.css">-->
+        <!--        <link href='css/test-1280.css' rel='stylesheet' type='text/css'>-->
+        <script src="js/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+        <!-- 新 Bootstrap 核心 CSS 文件 -->
+        <!--        <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
+
+        <style type="text/css">
+            .window-left, .window-right{
+                position:relative;
+                padding:20px;
+                margin-top: 10px;
+                height: 420px;
+                box-sizing: border-box;
+                margin-left:10px;
+                float:left;
+            }
+            .window-left {
+                width:80%;
+            }
+            .topRec_List dl,.maquee{ width:90%; overflow:hidden; margin:0 auto; color:#f0ece2}
+            .topRec_List dd{ float:left; text-align:left; border-bottom:1px solid #1B96EE; color:#1B96EE;font-size:14px;}
+            .topRec_List dl dd:nth-child(1){ width:16%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(2){ width:16%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(3){ width:16%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(4){ width:12%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(5){ width:10%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(6){ width:10%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(7){ width:10%; height:40px; line-height:40px; }
+            .topRec_List dl dd:nth-child(8){ width:10%; height:40px; line-height:40px; }
+
+            .maquee{ height:240px;}
+            .topRec_List ul{ width:100%; height:195px;}
+            .topRec_List li{
+                width:100%;
+                height:38px;
+                line-height:38px;
+                text-align:left;
+                font-size:12px;
+                color:black;
+                list-style-type:none;
+            }
+            /*.topRec_List li:nth-child(2n){ background:#077cd0}*/
+            .topRec_List li div{
+                float:left;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .topRec_List li div:hover {
+                float:left;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                color: red;
+                cursor: pointer;
+            }
+            .topRec_List li div:nth-child(1){ width:16%;}
+            .topRec_List li div:nth-child(2){ width:16%;}
+            .topRec_List li div:nth-child(3){ width:16%;}
+            .topRec_List li div:nth-child(4){ width:12%;}
+            .topRec_List li div:nth-child(5){ width:10%;}
+            .topRec_List li div:nth-child(6){ width:10%;}
+            .topRec_List li div:nth-child(7){ width:10%;}
+            .topRec_List li div:nth-child(8){ width:10%;}
+        </style>
+
+
+        <div class="dashboard-ecommerce">
+            <div class="row">
+                <!-- ============================================================== -->
+                <!-- valifation types -->
+                <!-- ============================================================== -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="card">
+                        <h5 class="card-header">链上交易信息</h5>
+                        <div class="card-body">
+                            <div class="window-left">
+                                <div class="com-screen-content">
+                                    <div class="topRec_List">
+                                        <dl>
+                                            <dd>日期</dd>
+                                            <dd>购买方</dd>
+                                            <dd>销售方</dd>
+                                            <dd>发票类型</dd>
+                                            <dd>税点</dd>
+                                            <dd>价费</dd>
+                                            <dd>税费</dd>
+                                            <dd>价税合计</dd>
+                                        </dl>
+                                        <div class="maquee">
+                                            <ul>
+                                                <li th:each="invoice: ${invoices}">
+                                                    <div th:text="${invoice.invoiceDate}" th:title="${invoice.invoiceDate}"></div>
+                                                    <div th:text="${invoice.buyerName}" th:title="${invoice.buyerName}"></div>
+                                                    <div th:text="${invoice.sellerName}" th:title="${invoice.sellerName}"></div>
+                                                    <div th:text="${invoice.invoiceType}" th:title="${invoice.invoiceType}"></div>
+                                                    <div th:text="${invoice.taxesPoint}" th:title="${invoice.taxesPoint}"></div>
+                                                    <div th:text="${invoice.price}" th:title="${invoice.price}"></div>
+                                                    <div th:text="${invoice.taxes}" th:title="${invoice.taxes}"></div>
+                                                    <div th:text="${invoice.pricePlusTaxes}" th:title="${invoice.pricePlusTaxes}"></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="left-top"></span>
+                                <span class="right-top"></span>
+                                <span class="left-bottom"></span>
+                                <span class="right-bottom"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="js/jquery.serializejson.js"></script>
+<script src="js/wonderland.js"></script>
+<script src="js/myscript.js"></script>

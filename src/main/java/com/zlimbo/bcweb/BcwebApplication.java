@@ -8,11 +8,13 @@ import com.citahub.cita.protocol.core.methods.response.*;
 import com.citahub.cita.protocol.http.HttpService;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.thymeleaf.TemplateEngine;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -24,7 +26,11 @@ import java.util.List;
 @SpringBootApplication
 public class BcwebApplication {
 
+
     public static void main(String[] args) throws IOException {
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.addDialect(new LayoutDialect());
 
         SpringApplication.run(BcwebApplication.class, args);
 
