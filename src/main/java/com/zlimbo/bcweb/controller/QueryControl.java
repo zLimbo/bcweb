@@ -22,7 +22,8 @@ public class QueryControl {
         model.addAttribute("sql", new Sql());
         return "query";
     }
-    //
+
+
     @PostMapping("/query")
     public ModelAndView query(@ModelAttribute Sql sql) {
         System.out.println("----------------------------------query ok");
@@ -48,8 +49,6 @@ public class QueryControl {
 
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
-
-            //Class invoiceClass = Invoice.class;
 
             for (int i = 0; i < columnCount; ++i) {
                 String columnName = resultSetMetaData.getColumnName(i + 1);

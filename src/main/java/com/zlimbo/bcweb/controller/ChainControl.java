@@ -24,34 +24,41 @@ import java.util.Map;
 @RequestMapping("")
 public class ChainControl {
 
-    private int txAllNumber = 0;
+    private int txAllNumber;
+    CITAj service;
+
+    public ChainControl() {
+        txAllNumber = 0;
+        service = CITAj.build(new HttpService("https://testnet.citahub.com"));
+        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
+    }
+
 
     @RequestMapping(value = {"", "index"})
     @ResponseBody
-    public ModelAndView chainInfo() {
+    public ModelAndView chainInfo() throws IOException {
         System.out.println("----------------------------------chainInfo ok");
         ModelAndView modelAndView = new ModelAndView("index");
+        Map<String, String> bcInfo = getBcinfo();
+        modelAndView.addAllObjects(bcInfo);
         return modelAndView;
     }
+
 
     @RequestMapping(value = "/bcinfoUpdate", method = RequestMethod.GET)
     @ResponseBody
     public String bcinfoUpdate() throws IOException {
         System.out.println("--------------------------------------------bcinfoUpdate ok");
 
-        Map<String, String> hashMap = getBcinfo();
+        Map<String, String> bcInfo = getBcinfo();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.putAll(hashMap);
-
+        jsonObject.putAll(bcInfo);
         return jsonObject.toJSONString();
     }
 
 
     Map<String, String> getBcinfo() throws IOException {
         Map<String, String> hashMap = new HashMap<>();
-
-        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
 
         NetPeerCount netPeerCount = service.netPeerCount().send();
         BigInteger peerCount = netPeerCount.getQuantity();

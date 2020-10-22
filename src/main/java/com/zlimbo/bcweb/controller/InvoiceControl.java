@@ -4,15 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zlimbo.bcweb.domain.Invoice;
-import com.zlimbo.bcweb.domain.Sql;
-import jnr.ffi.annotations.In;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
@@ -332,11 +329,7 @@ public class InvoiceControl {
                 se.printStackTrace();
             }//end finally try
 
-        }//end try
-//        if (offset == 6) {
-//            updateGraphInfo(invoice);
-//            return getInvoiceItem(invoice);
-//        }
+        }
         System.out.println("-----------------------------invoiceInsertResult");
         return "/invoiceInsertResult";
     }
@@ -350,8 +343,6 @@ public class InvoiceControl {
     }
 
 
-
-
     String getInvoiceItem(Invoice invoice) {
         return "<li>\n<div>" +
                 invoice.getInvoiceDate() + "</div>\n<div>" +
@@ -362,103 +353,6 @@ public class InvoiceControl {
                 invoice.getPrice() + "</div>\n<div>" +
                 invoice.getTaxes() + "</div>\n<div>" +
                 invoice.getPricePlusTaxes() + "</div>\n</li>";
-    }
-
-
-    @GetMapping("/invoiceQuery")
-    public String invoiceQuery(Model model) {
-        model.addAttribute("sql", new Sql());
-        return "invoiceQuery";
-    }
-//
-    @PostMapping("/invoiceQuery")
-    public ModelAndView invoiceQuery(@ModelAttribute Sql sql) {
-        System.out.println("----------------------------------invoiceQuery ok");
-        //System.out.println("sql: " + sql.getSql());
-//        List<Invoice> invoices = new ArrayList<Invoice>();
-        List<String> columnNames = new ArrayList<>();
-        List<List<String>> columnValues = new ArrayList<>();
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            //STEP 2: Register JDBC driver
-            Class.forName("com.mysql.jdbc.Driver");
-
-            //STEP 3: Open a connection
-            System.out.println("Connecting to a selected database...");
-            conn = DriverManager.getConnection(ConnectInfo.DB_URL, ConnectInfo.USER, ConnectInfo.PASS);
-            System.out.println("Connected database successfully...");
-
-            //STEP 4: Execute a query
-            System.out.println("Creating statement...");
-            stmt = conn.createStatement();
-
-            System.out.println("query sql: " + sql.getSql());
-            ResultSet resultSet = stmt.executeQuery(sql.getSql());
-
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-            int columnCount = resultSetMetaData.getColumnCount();
-
-            //Class invoiceClass = Invoice.class;
-
-            for (int i = 0; i < columnCount; ++i) {
-                String columnName = resultSetMetaData.getColumnName(i + 1);
-                columnNames.add(columnName);
-                //System.out.println("columnName: " + columnName);
-            }
-
-            while (resultSet.next()) {
-                List<String> list = new ArrayList<>();
-                for (String columnName: columnNames) {
-                    list.add(resultSet.getString(columnName));
-                }
-                columnValues.add(list);
-            }
-
-            //STEP 5: Extract data from result set
-            //while (resultSet.next()) {
-                //Invoice invoice = new Invoice();
-//                for (int i = 0; i < columnCount; ++i) {
-//                    String columnName = resultSetMetaData.getColumnName(i + 1);
-//                    String columnValue = resultSet.getString(columnName);
-//                    System.out.println("columnName: " + columnName);
-//                    System.out.println("columnValue: " + columnValue);
-//                    Field field = invoiceClass.getDeclaredField(columnName);
-//                    field.setAccessible(true);
-//                    field.set(invoice, columnValue);
-//                }
-//                invoices.add(invoice);
-            //}
-            resultSet.close();
-        } catch (SQLException se) {
-            //Handle errors for JDBC
-            se.printStackTrace();
-        } catch (Exception e) {
-            //Handle errors for Class.forName
-            e.printStackTrace();
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null)
-                    conn.close();
-            } catch (SQLException se) {
-            }// do nothing
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }//end finally try
-        }
-//        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-//        System.out.println("size: " + invoices.size());
-//        modelAndView.addObject("existValue", !invoices.isEmpty());
-//        modelAndView.addObject("invoices", invoices);
-        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-        modelAndView.addObject("columnNames", columnNames);
-        modelAndView.addObject("columnValues", columnValues);
-        modelAndView.addObject("existValue", !columnValues.isEmpty());
-        return modelAndView;
     }
 }
 

@@ -35,7 +35,8 @@ function getNowFormatDate() {
 
 
 
-
+// 实施更新链信息
+setInterval(function(){$.ajax(bcinfoUpdate)},3000);
 var bcinfoUpdate = {
     type: "get",
     url: "/bcinfoUpdate",
@@ -62,8 +63,7 @@ var bcinfoUpdate = {
 // 时间
 getNowFormatDate();
 
-// 实施更新链信息
-setInterval(function(){$.ajax(bcinfoUpdate)},3000);
+
 
 // 随机生成发票数据
 $("#randomInvoice").click(function (){

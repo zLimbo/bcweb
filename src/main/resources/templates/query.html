@@ -13,13 +13,14 @@
                         <div class="form-group row">
                             <label class="col-12 col-sm-3 col-form-label text-sm-right">SQL语句</label>
                             <div class="col-12 col-sm-8 col-lg-6">
-                                <input type="text" th:field="*{sql}" required="" placeholder="" class="form-control input-lg">
+                                <input type="text" id="sql" th:field="*{sql}" required="" placeholder="" class="form-control input-lg">
                             </div>
                         </div>
                         <div class="form-group row text-right">
                             <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
                                 <button type="submit" class="btn btn-space btn-primary">提交</button>
-                                <button type="reset" class="btn btn-space btn-secondary">重置</button>
+                                <button class="btn btn-space btn-secondary" id="btn-reset">重置</button>
+
                             </div>
                         </div>
                     </form>
