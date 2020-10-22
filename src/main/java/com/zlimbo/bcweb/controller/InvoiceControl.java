@@ -3,20 +3,16 @@ package com.zlimbo.bcweb.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.citahub.cita.protocol.CITAj;
-import com.citahub.cita.protocol.core.DefaultBlockParameter;
-import com.citahub.cita.protocol.core.methods.response.*;
-import com.citahub.cita.protocol.http.HttpService;
 import com.zlimbo.bcweb.domain.Invoice;
 import com.zlimbo.bcweb.domain.Sql;
-import org.bouncycastle.math.raw.Mod;
+import jnr.ffi.annotations.In;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.math.BigInteger;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
@@ -24,25 +20,17 @@ import java.util.*;
 @RequestMapping("")
 public class InvoiceControl {
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-
-
     static final int ITEM_SIZE = 6;
-
 
     private int offset = ITEM_SIZE;
     private boolean isAdd = false;
-    //    Map<String, Integer> invoiceKindNumber;
     LinkedList<String> xAxisData;
     LinkedList<String> priceData;
     LinkedList<String> taxesData;
+
     private int vatNumber = 0;
     private int normalNumber = 0;
     private int professionalNumber = 0;
-
-
-
 
     public InvoiceControl() {
         xAxisData = new LinkedList<>();
@@ -149,99 +137,11 @@ public class InvoiceControl {
             isAdd = true;
         }
 
-
         ModelAndView modelAndView = new ModelAndView("chainTxinfo");
         modelAndView.addObject("invoices", invoices);
-        modelAndView.addObject("invoice", new Invoice());
-//        Map<String, String> hashMap = getBcinfo();
-//        modelAndView.addAllObjects(hashMap);
 
         return modelAndView;
     }
-
-
-//    @RequestMapping(value = "/invoiceQuery")
-//    @ResponseBody
-//    public ModelAndView invoiceQuery() {
-//        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-//        return modelAndView;
-//    }
-//
-//    @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
-//    @ResponseBody
-//    public String invoiceQuery(String hashValue) {
-//        System.out.println("--------------------------------------------invoiceQuery ok");
-//        System.out.println(hashValue);
-//        List<Invoice> invoices = new ArrayList<Invoice>();
-//        Connection conn = null;
-//        Statement stmt = null;
-//        try {
-//            //STEP 2: Register JDBC driver
-//            Class.forName("com.mysql.jdbc.Driver");
-//
-//            //STEP 3: Open a connection
-//            System.out.println("Connecting to a selected database...");
-//            conn = DriverManager.getConnection(ConnectInfo.DB_URL, ConnectInfo.USER, ConnectInfo.PASS);
-//            System.out.println("Connected database successfully...");
-//
-//            //STEP 4: Execute a query
-//            System.out.println("Creating statement...");
-//            stmt = conn.createStatement();
-//
-//            String sql = "SELECT * FROM invoice WHERE hashValue=\"" + hashValue + "\"";
-//            System.out.println("query sql: " + sql);
-//            ResultSet resultSet = stmt.executeQuery(sql);
-//            //STEP 5: Extract data from result set
-//            while (resultSet.next()) {
-//                //Retrieve by column name
-//                invoices.add(new Invoice(
-//                        resultSet.getString("hashValue"),
-//                        resultSet.getString("invoiceNo"),
-//                        resultSet.getString("buyerName"),
-//                        resultSet.getString("buyerTaxesNo"),
-//                        resultSet.getString("sellerName"),
-//                        resultSet.getString("sellerTaxesNo"),
-//                        resultSet.getString("invoiceDate"),
-//                        resultSet.getString("invoiceType"),
-//                        resultSet.getString("taxesPoint"),
-//                        resultSet.getString("taxes"),
-//                        resultSet.getString("price"),
-//                        resultSet.getString("pricePlusTaxes"),
-//                        resultSet.getString("invoiceNumber"),
-//                        resultSet.getString("statementSheet"),
-//                        resultSet.getString("statementWeight"),
-//                        resultSet.getString("timestamp"),
-//                        resultSet.getString("contractAddress")
-//                ));
-//            }
-//            resultSet.close();
-//        } catch (SQLException se) {
-//            //Handle errors for JDBC
-//            se.printStackTrace();
-//        } catch (Exception e) {
-//            //Handle errors for Class.forName
-//            e.printStackTrace();
-//        } finally {
-//            //finally block used to close resources
-//            try {
-//                if (stmt != null)
-//                    conn.close();
-//            } catch (SQLException se) {
-//            }// do nothing
-//            try {
-//                if (conn != null)
-//                    conn.close();
-//            } catch (SQLException se) {
-//                se.printStackTrace();
-//            }//end finally try
-//        }
-//        if (invoices.isEmpty()) return "";
-//        Invoice invoice = invoices.get(0);
-//        String jsonString = JSON.toJSONString(invoice);
-//        System.out.println("jsonString: " + jsonString);
-//        return jsonString;
-//    }
-
 
     @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
     @ResponseBody
@@ -469,9 +369,6 @@ public class InvoiceControl {
     @GetMapping("/invoiceQuery")
     public String invoiceQuery(Model model) {
         model.addAttribute("sql", new Sql());
-        //ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-        //modelAndView.addObject("sql", new Sql());
-        //return modelAndView;
         return "invoiceQuery";
     }
 //
@@ -497,28 +394,45 @@ public class InvoiceControl {
 
             System.out.println("query sql: " + sql.getSql());
             ResultSet resultSet = stmt.executeQuery(sql.getSql());
+
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            int columnCount = resultSetMetaData.getColumnCount();
+            Class invoiceClass = Invoice.class;
+
             //STEP 5: Extract data from result set
             while (resultSet.next()) {
+                Invoice invoice = new Invoice();
+                for (int i = 0; i < columnCount; ++i) {
+                    String columnName = resultSetMetaData.getColumnName(i + 1);
+                    String columnValue = resultSet.getString(columnName);
+//                    System.out.println("columnName: " + columnName);
+//                    System.out.println("columnValue: " + columnValue);
+                    Field field = invoiceClass.getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    field.set(invoice, columnValue);
+                }
+                invoices.add(invoice);
+
                 //Retrieve by column name
-                invoices.add(new Invoice(
-                        resultSet.getString("hashValue"),
-                        resultSet.getString("invoiceNo"),
-                        resultSet.getString("buyerName"),
-                        resultSet.getString("buyerTaxesNo"),
-                        resultSet.getString("sellerName"),
-                        resultSet.getString("sellerTaxesNo"),
-                        resultSet.getString("invoiceDate"),
-                        resultSet.getString("invoiceType"),
-                        resultSet.getString("taxesPoint"),
-                        resultSet.getString("taxes"),
-                        resultSet.getString("price"),
-                        resultSet.getString("pricePlusTaxes"),
-                        resultSet.getString("invoiceNumber"),
-                        resultSet.getString("statementSheet"),
-                        resultSet.getString("statementWeight"),
-                        resultSet.getString("timestamp"),
-                        resultSet.getString("contractAddress")
-                ));
+//                invoices.add(new Invoice(
+//                        resultSet.getString("hashValue"),
+//                        resultSet.getString("invoiceNo"),
+//                        resultSet.getString("buyerName"),
+//                        resultSet.getString("buyerTaxesNo"),
+//                        resultSet.getString("sellerName"),
+//                        resultSet.getString("sellerTaxesNo"),
+//                        resultSet.getString("invoiceDate"),
+//                        resultSet.getString("invoiceType"),
+//                        resultSet.getString("taxesPoint"),
+//                        resultSet.getString("taxes"),
+//                        resultSet.getString("price"),
+//                        resultSet.getString("pricePlusTaxes"),
+//                        resultSet.getString("invoiceNumber"),
+//                        resultSet.getString("statementSheet"),
+//                        resultSet.getString("statementWeight"),
+//                        resultSet.getString("timestamp"),
+//                        resultSet.getString("contractAddress")
+//                ));
             }
             resultSet.close();
         } catch (SQLException se) {
@@ -543,6 +457,7 @@ public class InvoiceControl {
         }
         ModelAndView modelAndView = new ModelAndView("invoiceQuery");
         System.out.println("size: " + invoices.size());
+        modelAndView.addObject("existValue", !invoices.isEmpty());
         modelAndView.addObject("invoices", invoices);
         return modelAndView;
     }
