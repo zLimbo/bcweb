@@ -181,16 +181,16 @@ $("#btn-insertModal").click(function () {
 
 
 // 插入数据
-$("#btn-invoiceInsert").click(function () {
+$("#btn-invoiceInsertSubmit").click(function () {
     var json=$("#form-invoiceInsert").serializeJSON();
-    //alert(json);
+    alert(json);
     var jsonString = JSON.stringify(json);
-    //alert(jsonString);
+    alert(jsonString);
 
     $.ajax({
         contentType: "application/json; charset=utf-8",
         type: 'POST',
-        url: '/invoiceInsert',
+        url: '/invoiceInsertSubmit',
         data: jsonString,
         error: function (request) {
             alert("插入失败！");
