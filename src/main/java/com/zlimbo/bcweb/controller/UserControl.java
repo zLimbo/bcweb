@@ -9,10 +9,4 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/user")
 public class UserControl {
 
-//    @RequestMapping(value = "user-info")
-//    @ResponseBody
-//    public ModelAndView show() {
-//        ModelAndView modelAndView = new ModelAndView("user-info");
-//        return modelAndView;
-//    }
 }

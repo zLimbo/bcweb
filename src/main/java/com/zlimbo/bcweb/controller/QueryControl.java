@@ -15,17 +15,17 @@ import java.util.List;
 
 @Controller
 @RequestMapping("")
-public class TxControl {
+public class QueryControl {
 
-    @GetMapping("/txQuery")
-    public String txQuery(Model model) {
+    @GetMapping("/query")
+    public String query(Model model) {
         model.addAttribute("sql", new Sql());
-        return "txQuery";
+        return "query";
     }
     //
-    @PostMapping("/txQuery")
-    public ModelAndView txQuery(@ModelAttribute Sql sql) {
-        System.out.println("----------------------------------txQuery ok");
+    @PostMapping("/query")
+    public ModelAndView query(@ModelAttribute Sql sql) {
+        System.out.println("----------------------------------query ok");
         List<String> columnNames = new ArrayList<>();
         List<List<String>> columnValues = new ArrayList<>();
         Connection conn = null;
@@ -54,13 +54,13 @@ public class TxControl {
             for (int i = 0; i < columnCount; ++i) {
                 String columnName = resultSetMetaData.getColumnName(i + 1);
                 columnNames.add(columnName);
-                //System.out.println("columnName: " + columnName);
+                System.out.println("columnName: " + columnName);
             }
 
             while (resultSet.next()) {
                 List<String> list = new ArrayList<>();
-                for (String columnName: columnNames) {
-                    list.add(resultSet.getString(columnName));
+                for (int i = 0; i < columnCount; ++i) {
+                    list.add(resultSet.getString(i + 1));
                 }
                 columnValues.add(list);
             }
@@ -85,7 +85,7 @@ public class TxControl {
                 se.printStackTrace();
             }//end finally try
         }
-        ModelAndView modelAndView = new ModelAndView("txQuery");
+        ModelAndView modelAndView = new ModelAndView("query");
         modelAndView.addObject("columnNames", columnNames);
         modelAndView.addObject("columnValues", columnValues);
         modelAndView.addObject("existValue", !columnValues.isEmpty());

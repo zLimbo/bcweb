@@ -6,10 +6,10 @@
     <div layout:fragment="content">
         <div class="container-fluid  dashboard-content">
             <div class="card">
-                <h5 class="card-header">交易查询</h5>
+                <h5 class="card-header">数据查询</h5>
                 <div class="card-body">
                     <form id="contract-deploy-form" data-parsley-validate="" novalidate=""
-                          th:action="@{/txQuery}" th:object="${sql}" method="post">
+                          th:action="@{/query}" th:object="${sql}" method="post">
                         <div class="form-group row">
                             <label class="col-12 col-sm-3 col-form-label text-sm-right">SQL语句</label>
                             <div class="col-12 col-sm-8 col-lg-6">

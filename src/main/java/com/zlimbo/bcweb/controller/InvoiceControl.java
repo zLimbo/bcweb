@@ -414,6 +414,21 @@ public class InvoiceControl {
                 }
                 columnValues.add(list);
             }
+
+            //STEP 5: Extract data from result set
+            //while (resultSet.next()) {
+                //Invoice invoice = new Invoice();
+//                for (int i = 0; i < columnCount; ++i) {
+//                    String columnName = resultSetMetaData.getColumnName(i + 1);
+//                    String columnValue = resultSet.getString(columnName);
+//                    System.out.println("columnName: " + columnName);
+//                    System.out.println("columnValue: " + columnValue);
+//                    Field field = invoiceClass.getDeclaredField(columnName);
+//                    field.setAccessible(true);
+//                    field.set(invoice, columnValue);
+//                }
+//                invoices.add(invoice);
+            //}
             resultSet.close();
         } catch (SQLException se) {
             //Handle errors for JDBC
@@ -435,6 +450,10 @@ public class InvoiceControl {
                 se.printStackTrace();
             }//end finally try
         }
+//        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
+//        System.out.println("size: " + invoices.size());
+//        modelAndView.addObject("existValue", !invoices.isEmpty());
+//        modelAndView.addObject("invoices", invoices);
         ModelAndView modelAndView = new ModelAndView("invoiceQuery");
         modelAndView.addObject("columnNames", columnNames);
         modelAndView.addObject("columnValues", columnValues);
