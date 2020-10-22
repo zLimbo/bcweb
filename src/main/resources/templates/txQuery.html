@@ -9,7 +9,7 @@
                 <h5 class="card-header">交易查询</h5>
                 <div class="card-body">
                     <form id="contract-deploy-form" data-parsley-validate="" novalidate=""
-                          th:action="@{/invoiceQuery}" th:object="${sql}" method="post">
+                          th:action="@{/txQuery}" th:object="${sql}" method="post">
                         <div class="form-group row">
                             <label class="col-12 col-sm-3 col-form-label text-sm-right">SQL语句</label>
                             <div class="col-12 col-sm-8 col-lg-6">
@@ -37,9 +37,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="list:${columnValues}">
-                                    <td th:each="columnValue:${list}" th:text="${columnValue}"></td>
-                                </tr>
+                            <tr th:each="list:${columnValues}">
+                                <td th:each="columnValue:${list}" th:text="${columnValue}"></td>
+                            </tr>
                             </tbody>
                             <tfoot>
                             <tr>

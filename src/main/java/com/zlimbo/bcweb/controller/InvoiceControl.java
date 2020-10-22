@@ -352,7 +352,6 @@ public class InvoiceControl {
 
 
 
-
     String getInvoiceItem(Invoice invoice) {
         return "<li>\n<div>" +
                 invoice.getInvoiceDate() + "</div>\n<div>" +
@@ -376,7 +375,9 @@ public class InvoiceControl {
     public ModelAndView invoiceQuery(@ModelAttribute Sql sql) {
         System.out.println("----------------------------------invoiceQuery ok");
         //System.out.println("sql: " + sql.getSql());
-        List<Invoice> invoices = new ArrayList<Invoice>();
+//        List<Invoice> invoices = new ArrayList<Invoice>();
+        List<String> columnNames = new ArrayList<>();
+        List<List<String>> columnValues = new ArrayList<>();
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -397,42 +398,21 @@ public class InvoiceControl {
 
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
-            Class invoiceClass = Invoice.class;
 
-            //STEP 5: Extract data from result set
+            //Class invoiceClass = Invoice.class;
+
+            for (int i = 0; i < columnCount; ++i) {
+                String columnName = resultSetMetaData.getColumnName(i + 1);
+                columnNames.add(columnName);
+                //System.out.println("columnName: " + columnName);
+            }
+
             while (resultSet.next()) {
-                Invoice invoice = new Invoice();
-                for (int i = 0; i < columnCount; ++i) {
-                    String columnName = resultSetMetaData.getColumnName(i + 1);
-                    String columnValue = resultSet.getString(columnName);
-//                    System.out.println("columnName: " + columnName);
-//                    System.out.println("columnValue: " + columnValue);
-                    Field field = invoiceClass.getDeclaredField(columnName);
-                    field.setAccessible(true);
-                    field.set(invoice, columnValue);
+                List<String> list = new ArrayList<>();
+                for (String columnName: columnNames) {
+                    list.add(resultSet.getString(columnName));
                 }
-                invoices.add(invoice);
-
-                //Retrieve by column name
-//                invoices.add(new Invoice(
-//                        resultSet.getString("hashValue"),
-//                        resultSet.getString("invoiceNo"),
-//                        resultSet.getString("buyerName"),
-//                        resultSet.getString("buyerTaxesNo"),
-//                        resultSet.getString("sellerName"),
-//                        resultSet.getString("sellerTaxesNo"),
-//                        resultSet.getString("invoiceDate"),
-//                        resultSet.getString("invoiceType"),
-//                        resultSet.getString("taxesPoint"),
-//                        resultSet.getString("taxes"),
-//                        resultSet.getString("price"),
-//                        resultSet.getString("pricePlusTaxes"),
-//                        resultSet.getString("invoiceNumber"),
-//                        resultSet.getString("statementSheet"),
-//                        resultSet.getString("statementWeight"),
-//                        resultSet.getString("timestamp"),
-//                        resultSet.getString("contractAddress")
-//                ));
+                columnValues.add(list);
             }
             resultSet.close();
         } catch (SQLException se) {
@@ -456,13 +436,11 @@ public class InvoiceControl {
             }//end finally try
         }
         ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-        System.out.println("size: " + invoices.size());
-        modelAndView.addObject("existValue", !invoices.isEmpty());
-        modelAndView.addObject("invoices", invoices);
+        modelAndView.addObject("columnNames", columnNames);
+        modelAndView.addObject("columnValues", columnValues);
+        modelAndView.addObject("existValue", !columnValues.isEmpty());
         return modelAndView;
     }
-
-
 }
 
 
