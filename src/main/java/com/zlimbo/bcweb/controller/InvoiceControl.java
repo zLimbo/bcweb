@@ -8,7 +8,10 @@ import com.citahub.cita.protocol.core.DefaultBlockParameter;
 import com.citahub.cita.protocol.core.methods.response.*;
 import com.citahub.cita.protocol.http.HttpService;
 import com.zlimbo.bcweb.domain.Invoice;
+import com.zlimbo.bcweb.domain.Sql;
+import org.bouncycastle.math.raw.Mod;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -158,87 +161,87 @@ public class InvoiceControl {
     }
 
 
-    @RequestMapping(value = "/invoiceQuery")
-    @ResponseBody
-    public ModelAndView invoiceQuery() {
-        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
-    @ResponseBody
-    public String invoiceQuery(String hashValue) {
-        System.out.println("--------------------------------------------invoiceQuery ok");
-        System.out.println(hashValue);
-        List<Invoice> invoices = new ArrayList<Invoice>();
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            //STEP 2: Register JDBC driver
-            Class.forName("com.mysql.jdbc.Driver");
-
-            //STEP 3: Open a connection
-            System.out.println("Connecting to a selected database...");
-            conn = DriverManager.getConnection(ConnectInfo.DB_URL, ConnectInfo.USER, ConnectInfo.PASS);
-            System.out.println("Connected database successfully...");
-
-            //STEP 4: Execute a query
-            System.out.println("Creating statement...");
-            stmt = conn.createStatement();
-
-            String sql = "SELECT * FROM invoice WHERE hashValue=\"" + hashValue + "\"";
-            System.out.println("query sql: " + sql);
-            ResultSet resultSet = stmt.executeQuery(sql);
-            //STEP 5: Extract data from result set
-            while (resultSet.next()) {
-                //Retrieve by column name
-                invoices.add(new Invoice(
-                        resultSet.getString("hashValue"),
-                        resultSet.getString("invoiceNo"),
-                        resultSet.getString("buyerName"),
-                        resultSet.getString("buyerTaxesNo"),
-                        resultSet.getString("sellerName"),
-                        resultSet.getString("sellerTaxesNo"),
-                        resultSet.getString("invoiceDate"),
-                        resultSet.getString("invoiceType"),
-                        resultSet.getString("taxesPoint"),
-                        resultSet.getString("taxes"),
-                        resultSet.getString("price"),
-                        resultSet.getString("pricePlusTaxes"),
-                        resultSet.getString("invoiceNumber"),
-                        resultSet.getString("statementSheet"),
-                        resultSet.getString("statementWeight"),
-                        resultSet.getString("timestamp"),
-                        resultSet.getString("contractAddress")
-                ));
-            }
-            resultSet.close();
-        } catch (SQLException se) {
-            //Handle errors for JDBC
-            se.printStackTrace();
-        } catch (Exception e) {
-            //Handle errors for Class.forName
-            e.printStackTrace();
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null)
-                    conn.close();
-            } catch (SQLException se) {
-            }// do nothing
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }//end finally try
-        }
-        if (invoices.isEmpty()) return "";
-        Invoice invoice = invoices.get(0);
-        String jsonString = JSON.toJSONString(invoice);
-        System.out.println("jsonString: " + jsonString);
-        return jsonString;
-    }
+//    @RequestMapping(value = "/invoiceQuery")
+//    @ResponseBody
+//    public ModelAndView invoiceQuery() {
+//        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
+//        return modelAndView;
+//    }
+//
+//    @RequestMapping(value = "/invoiceQuery", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String invoiceQuery(String hashValue) {
+//        System.out.println("--------------------------------------------invoiceQuery ok");
+//        System.out.println(hashValue);
+//        List<Invoice> invoices = new ArrayList<Invoice>();
+//        Connection conn = null;
+//        Statement stmt = null;
+//        try {
+//            //STEP 2: Register JDBC driver
+//            Class.forName("com.mysql.jdbc.Driver");
+//
+//            //STEP 3: Open a connection
+//            System.out.println("Connecting to a selected database...");
+//            conn = DriverManager.getConnection(ConnectInfo.DB_URL, ConnectInfo.USER, ConnectInfo.PASS);
+//            System.out.println("Connected database successfully...");
+//
+//            //STEP 4: Execute a query
+//            System.out.println("Creating statement...");
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM invoice WHERE hashValue=\"" + hashValue + "\"";
+//            System.out.println("query sql: " + sql);
+//            ResultSet resultSet = stmt.executeQuery(sql);
+//            //STEP 5: Extract data from result set
+//            while (resultSet.next()) {
+//                //Retrieve by column name
+//                invoices.add(new Invoice(
+//                        resultSet.getString("hashValue"),
+//                        resultSet.getString("invoiceNo"),
+//                        resultSet.getString("buyerName"),
+//                        resultSet.getString("buyerTaxesNo"),
+//                        resultSet.getString("sellerName"),
+//                        resultSet.getString("sellerTaxesNo"),
+//                        resultSet.getString("invoiceDate"),
+//                        resultSet.getString("invoiceType"),
+//                        resultSet.getString("taxesPoint"),
+//                        resultSet.getString("taxes"),
+//                        resultSet.getString("price"),
+//                        resultSet.getString("pricePlusTaxes"),
+//                        resultSet.getString("invoiceNumber"),
+//                        resultSet.getString("statementSheet"),
+//                        resultSet.getString("statementWeight"),
+//                        resultSet.getString("timestamp"),
+//                        resultSet.getString("contractAddress")
+//                ));
+//            }
+//            resultSet.close();
+//        } catch (SQLException se) {
+//            //Handle errors for JDBC
+//            se.printStackTrace();
+//        } catch (Exception e) {
+//            //Handle errors for Class.forName
+//            e.printStackTrace();
+//        } finally {
+//            //finally block used to close resources
+//            try {
+//                if (stmt != null)
+//                    conn.close();
+//            } catch (SQLException se) {
+//            }// do nothing
+//            try {
+//                if (conn != null)
+//                    conn.close();
+//            } catch (SQLException se) {
+//                se.printStackTrace();
+//            }//end finally try
+//        }
+//        if (invoices.isEmpty()) return "";
+//        Invoice invoice = invoices.get(0);
+//        String jsonString = JSON.toJSONString(invoice);
+//        System.out.println("jsonString: " + jsonString);
+//        return jsonString;
+//    }
 
 
     @RequestMapping(value = "/invoiceUpdate", method = RequestMethod.GET)
@@ -360,19 +363,16 @@ public class InvoiceControl {
     }
 
 
-    @RequestMapping(value = "invoiceInsert")
-    @ResponseBody
-    public ModelAndView invoiceInsert() {
-        System.out.println("----------------------------------invoiceInsert ok");
-        ModelAndView modelAndView = new ModelAndView("invoiceInsert");
-        return modelAndView;
+    @GetMapping("/invoiceInsert")
+    public String invoiceForm(Model model) {
+        System.out.println("----------------------------------invoiceForm ok");
+        model.addAttribute("invoice", new Invoice());
+        return "invoiceInsert";
     }
 
-    @RequestMapping("invoiceInsertSubmit")
-    @ResponseBody
-    public String invoiceInsertSubmit(@RequestBody Invoice invoice) throws InterruptedException {
-
-        System.out.println("--------------------------------------------invoiceInsertSubmit ok");
+    @PostMapping("/invoiceInsert")
+    public String invoiceSubmit(@ModelAttribute Invoice invoice) {
+        System.out.println("----------------------------------invoiceSubmit ok");
         Connection conn = null;
         Statement stmt = null;
         try {
@@ -434,12 +434,12 @@ public class InvoiceControl {
             }//end finally try
 
         }//end try
-        if (offset == 6) {
-            updateGraphInfo(invoice);
-            return getInvoiceItem(invoice);
-        }
-        //Thread.sleep(10000);
-        return "";
+//        if (offset == 6) {
+//            updateGraphInfo(invoice);
+//            return getInvoiceItem(invoice);
+//        }
+        System.out.println("-----------------------------invoiceInsertResult");
+        return "/invoiceInsertResult";
     }
 
 
@@ -531,9 +531,88 @@ public class InvoiceControl {
     }
 
 
+    @GetMapping("/invoiceQuery")
+    public ModelAndView invoiceQuery() {
+        //model.addAttribute("sql", new Sql());
+        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
+        modelAndView.addObject("sql", new Sql());
+        return modelAndView;
+        //return "invoiceQuery";
+    }
+//
+    @PostMapping("/invoiceQuery")
+    public ModelAndView invoiceQuery(@ModelAttribute Sql sql) {
+        System.out.println("----------------------------------invoiceQuery ok");
+        //System.out.println("sql: " + sql.getSql());
+        List<Invoice> invoices = new ArrayList<Invoice>();
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            //STEP 2: Register JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //STEP 3: Open a connection
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection(ConnectInfo.DB_URL, ConnectInfo.USER, ConnectInfo.PASS);
+            System.out.println("Connected database successfully...");
+
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+
+            System.out.println("query sql: " + sql.getSql());
+            ResultSet resultSet = stmt.executeQuery(sql.getSql());
+            //STEP 5: Extract data from result set
+            while (resultSet.next()) {
+                //Retrieve by column name
+                invoices.add(new Invoice(
+                        resultSet.getString("hashValue"),
+                        resultSet.getString("invoiceNo"),
+                        resultSet.getString("buyerName"),
+                        resultSet.getString("buyerTaxesNo"),
+                        resultSet.getString("sellerName"),
+                        resultSet.getString("sellerTaxesNo"),
+                        resultSet.getString("invoiceDate"),
+                        resultSet.getString("invoiceType"),
+                        resultSet.getString("taxesPoint"),
+                        resultSet.getString("taxes"),
+                        resultSet.getString("price"),
+                        resultSet.getString("pricePlusTaxes"),
+                        resultSet.getString("invoiceNumber"),
+                        resultSet.getString("statementSheet"),
+                        resultSet.getString("statementWeight"),
+                        resultSet.getString("timestamp"),
+                        resultSet.getString("contractAddress")
+                ));
+            }
+            resultSet.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null)
+                    conn.close();
+            } catch (SQLException se) {
+            }// do nothing
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }
+        ModelAndView modelAndView = new ModelAndView("invoiceQueryResult");
+        System.out.println("size: " + invoices.size());
+        modelAndView.addObject("invoices", invoices);
+        return modelAndView;
+    }
 
 
-    
 }
 
 

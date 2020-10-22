@@ -1,0 +1,31 @@
+<div layout:decorator="base">
+
+    <div layout:fragment="content">
+        <div class="container-fluid  dashboard-content">
+            <!-- ============================================================== -->
+            <!-- hover list  -->
+            <!-- ============================================================== -->
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                <!-- ============================================================== -->
+                <!-- hover list  -->
+                <!-- ============================================================== -->
+                <div class="card">
+                    <h5 class="card-header">部署成功</h5>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action active"
+                               th:text="'合约表名称：' + ${contract.tableName}"></a>
+                            <a href="#" class="list-group-item list-group-item-action"
+                               th:text="'合约字节码：' + ${contract.bytecode}"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- end hoverlist  -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
