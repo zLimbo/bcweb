@@ -61,8 +61,7 @@ var bcinfoUpdate = {
 
 // 时间
 getNowFormatDate();
-// 数据实时更新 + 滚动
-setInterval(function(){$.ajax(invoiceUpdate)},3000);
+
 // 实施更新链信息
 setInterval(function(){$.ajax(bcinfoUpdate)},3000);
 
@@ -233,7 +232,8 @@ $("#btn-deployContract-submit").click(function (){
     })
 })
 
-
+// 数据实时更新 + 滚动
+setInterval(function(){$.ajax(invoiceUpdate)},3000);
 // 实时更新滚动表格
 var invoiceUpdate = {
     type: "get",

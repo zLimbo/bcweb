@@ -19,7 +19,7 @@
                         <div class="form-group row text-right">
                             <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
                                 <button type="submit" class="btn btn-space btn-primary">提交</button>
-                                <button type="reset" class="btn btn-space btn-secondary">重置</button>
+                                <button type="button" href="invoiceQuery" class="btn btn-space btn-secondary">重置</button>
                             </div>
                         </div>
                     </form>
@@ -53,7 +53,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="invoice:$(invoices)">
+                            <tr th:each="invoice:${invoices}">
                                 <td th:text="${invoice.hashValue}"></td>
                                 <td th:text="${invoice.invoiceNo}"></td>
                                 <td th:text="${invoice.buyerName}"></td>

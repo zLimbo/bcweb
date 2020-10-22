@@ -117,10 +117,24 @@
     </div>
 </div>
 
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="js/jquery.serializejson.js"></script>
-<script src="js/wonderland.js"></script>
-<script src="js/myscript.js"></script>
+
+<script>
+    // 数据实时更新 + 滚动
+    setInterval(function(){$.ajax(invoiceUpdate)},3000);
+    // 实时更新滚动表格
+    var invoiceUpdate = {
+        type: "get",
+        url: "/invoiceUpdate",    //向后端请求数据的url
+        success: function (liItem) {
+            if (liItem) {
+                $(".maquee").find("ul").animate({
+                    marginTop: "-37px"
+                }, 500, function () {
+                    $(this).append(liItem);
+                    $(this).find("li:first").remove();
+                    $(this).css({marginTop: "0px"});
+                })
+            }
+        }
+    };
+</script>

@@ -33,7 +33,6 @@ public class InvoiceControl {
 
     private int offset = ITEM_SIZE;
     private boolean isAdd = false;
-    private int txAllNumber = 0;
     //    Map<String, Integer> invoiceKindNumber;
     LinkedList<String> xAxisData;
     LinkedList<String> priceData;
@@ -154,8 +153,8 @@ public class InvoiceControl {
         ModelAndView modelAndView = new ModelAndView("chainTxinfo");
         modelAndView.addObject("invoices", invoices);
         modelAndView.addObject("invoice", new Invoice());
-        Map<String, String> hashMap = getBcinfo();
-        modelAndView.addAllObjects(hashMap);
+//        Map<String, String> hashMap = getBcinfo();
+//        modelAndView.addAllObjects(hashMap);
 
         return modelAndView;
     }
@@ -451,71 +450,7 @@ public class InvoiceControl {
     }
 
 
-    @RequestMapping(value = "/bcinfoUpdate", method = RequestMethod.GET)
-    @ResponseBody
-    public String bcinfoUpdate() throws IOException {
-        System.out.println("--------------------------------------------bcinfoUpdate ok");
 
-        Map<String, String> hashMap = getBcinfo();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.putAll(hashMap);
-
-        return jsonObject.toJSONString();
-    }
-
-
-    Map<String, String> getBcinfo() throws IOException {
-        Map<String, String> hashMap = new HashMap<>();
-
-        CITAj service = CITAj.build(new HttpService("https://testnet.citahub.com"));
-        //CITAj service = CITAj.build(new HttpService("http://139.196.208.146:1337"));
-
-        NetPeerCount netPeerCount = service.netPeerCount().send();
-        BigInteger peerCount = netPeerCount.getQuantity();
-        hashMap.put("peerCount", peerCount.toString());
-
-        AppBlockNumber appBlockNumber = service.appBlockNumber().send();
-        BigInteger blockNumber = appBlockNumber.getBlockNumber();
-        hashMap.put("blockNumber", blockNumber.toString());
-
-
-        DefaultBlockParameter defaultParam = DefaultBlockParameter.valueOf("latest");
-        AppMetaData appMetaData = service.appMetaData(defaultParam).send();
-        AppMetaData.AppMetaDataResult result = appMetaData.getAppMetaDataResult();
-        BigInteger chainId = result.getChainId();
-        String chainName = result.getChainName();
-        String genesisTS = result.getGenesisTimestamp();
-        hashMap.put("chainId", chainId.toString());
-        hashMap.put("chainName", chainName);
-        hashMap.put("genesisTS", genesisTS);
-
-
-        AppBlock appBlock = service.appGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), true).send();
-        hashMap.put("blockId", String.valueOf(appBlock.getId()));
-        hashMap.put("blockJsonrpc", appBlock.getJsonrpc());
-
-        AppBlock.Block block = appBlock.getBlock();
-        hashMap.put("blockVersion", block.getVersion());
-        hashMap.put("blockHash", block.getHash());
-
-        AppBlock.Header header = block.getHeader();
-        hashMap.put("headerTimestamp", header.getTimestamp().toString());
-        hashMap.put("headerPrevHash", header.getPrevHash());
-        hashMap.put("headerNumber", header.getNumber());
-        hashMap.put("headerStateRoot", header.getStateRoot());
-        hashMap.put("headerTransactionsRoot", header.getTransactionsRoot());
-        hashMap.put("headerReceiptsRoot", header.getReceiptsRoot());
-        hashMap.put("headerProposer", header.getProposer());
-
-        AppBlock.Body body = block.getBody();
-        List<AppBlock.TransactionObject> transactionObjects = body.getTransactions();
-        int blockTxNumber = transactionObjects.size();
-        hashMap.put("blockTxNumber", String.valueOf(blockTxNumber));
-        txAllNumber += blockTxNumber;
-        hashMap.put("txAllNumber", String.valueOf(txAllNumber));
-
-        return hashMap;
-    }
 
 
     String getInvoiceItem(Invoice invoice) {
@@ -532,12 +467,12 @@ public class InvoiceControl {
 
 
     @GetMapping("/invoiceQuery")
-    public ModelAndView invoiceQuery() {
-        //model.addAttribute("sql", new Sql());
-        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
-        modelAndView.addObject("sql", new Sql());
-        return modelAndView;
-        //return "invoiceQuery";
+    public String invoiceQuery(Model model) {
+        model.addAttribute("sql", new Sql());
+        //ModelAndView modelAndView = new ModelAndView("invoiceQuery");
+        //modelAndView.addObject("sql", new Sql());
+        //return modelAndView;
+        return "invoiceQuery";
     }
 //
     @PostMapping("/invoiceQuery")
@@ -606,7 +541,7 @@ public class InvoiceControl {
                 se.printStackTrace();
             }//end finally try
         }
-        ModelAndView modelAndView = new ModelAndView("invoiceQueryResult");
+        ModelAndView modelAndView = new ModelAndView("invoiceQuery");
         System.out.println("size: " + invoices.size());
         modelAndView.addObject("invoices", invoices);
         return modelAndView;

@@ -53,7 +53,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="invoice:$(invoices)">
+                            <tr th:each="invoice:${invoices}">
                                 <td th:text="${invoice.hashValue}"></td>
                                 <td th:text="${invoice.invoiceNo}"></td>
                                 <td th:text="${invoice.buyerName}"></td>
